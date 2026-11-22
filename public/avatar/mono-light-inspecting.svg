@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 260" width="240" height="260">
+<polygon points="18,260 44,214 94,194 120,260" fill="#444851" />
+<polygon points="222,260 196,214 146,194 120,260" fill="#282B31" />
+<polygon points="94,194 120,226 120,260" fill="#353840" />
+<polygon points="146,194 120,226 120,260" fill="#353840" />
+<polygon points="98,194 120,222 142,194 120,204" fill="#ECECE8" />
+<polygon points="100,156 120,172 120,204 94,194" fill="#A2A7B0" />
+<polygon points="140,156 120,172 120,204 146,194" fill="#8E939D" />
+<g transform="translate(0 0) rotate(-5 120 168)">
+<polygon points="74,98 66,102 68,124 79,130" fill="#B6BAC2" />
+<polygon points="166,98 174,102 172,124 161,130" fill="#8E939D" />
+<polygon points="84,58 120,46 120,72" fill="#DADCE0" />
+<polygon points="84,58 120,72 120,96 74,96" fill="#C9CCD2" />
+<polygon points="156,58 120,46 120,72" fill="#C9CCD2" />
+<polygon points="156,58 166,96 120,96 120,72" fill="#B6BAC2" />
+<polygon points="74,96 120,96 96,124 80,134" fill="#DADCE0" />
+<polygon points="120,96 120,130 96,124" fill="#C9CCD2" />
+<polygon points="120,96 144,124 120,130" fill="#A2A7B0" />
+<polygon points="166,96 160,134 144,124 120,96" fill="#A2A7B0" />
+<polygon points="80,134 96,124 120,130 120,152 96,160" fill="#C9CCD2" />
+<polygon points="160,134 144,124 120,130 120,152 144,160" fill="#8E939D" />
+<polygon points="96,160 120,152 120,172" fill="#B6BAC2" />
+<polygon points="144,160 120,152 120,172" fill="#8E939D" />
+<polygon points="72,102 69,66 88,42 96,70 79,86" fill="#31343B" />
+<polygon points="88,42 122,30 118,62 96,70" fill="#24272D" />
+<polygon points="122,30 154,40 171,66 168,102 163,82 151,64 118,62" fill="#1A1C21" />
+<polygon points="88,97 108,94 108,97 88,100" fill="#14161A" />
+<polygon points="132,96 152,99 152,102 132,99" fill="#14161A" />
+<polygon points="89,107 97,103 105,107 97,110.5" fill="#14161A" />
+<circle cx="95.5" cy="106" r="1.3" fill="#DADCE0"/>
+<polygon points="129,107 137,103 145,107 137,110.5" fill="#14161A" />
+<circle cx="135.5" cy="106" r="1.3" fill="#DADCE0"/>
+<polygon points="109,145 120,147.5 131,145 120,149.5" fill="#5E636D" />
+<polyline points="164,84 166,96 160,134 144,160" fill="none" stroke="#C6D624" stroke-width="3.2" stroke-linejoin="round"/>
+</g></svg>

@@ -1,0 +1,140 @@
+---
+import Text from "./Text.astro";
+import { SITE } from "@/site";
+import { hasPlaceholder } from "@/lib/rules";
+import { evidenceById } from "@/lib/evidence";
+interface Props {
+  sheet: string;
+  order: string[];
+}
+const { sheet, order } = Astro.props;
+const all = await evidenceById();
+const stated = order.filter((id) => all.get(id)?.state === "Stated").length;
+const claims = order.length ? `${order.length} · ${order.length - stated} with a source` : "none";
+---
+
+<footer class="site-footer page">
+  <div class="cta">
+    <p class="ask">Ask me how any of it works.</p>
+    <div class="links">
+      {hasPlaceholder(SITE.email) ? (
+        <span class="btn primary">
+          <Text value={SITE.email} />
+        </span>
+      ) : (
+        <a class="btn primary" href={`mailto:${SITE.email}`}>
+          {SITE.email}
+        </a>
+      )}
+      {hasPlaceholder(SITE.linkedin) ? (
+        <span class="btn">
+          <Text value={SITE.linkedin} />
+        </span>
+      ) : (
+        <a class="btn" href={SITE.linkedin} rel="noopener noreferrer">
+          LinkedIn ↗
+        </a>
+      )}
+      <a class="btn" href={SITE.github} rel="noopener noreferrer">
+        GitHub ↗
+      </a>
+    </div>
+  </div>
+  <dl class="titleblock">
+    <div>
+      <dt>Sheet</dt>
+      <dd>{sheet}</dd>
+    </div>
+    <div>
+      <dt>Drawn</dt>
+      <dd>{SITE.name}</dd>
+    </div>
+    <div>
+      <dt>Revision</dt>
+      <dd>
+        v{SITE.version} · <a href="/system#changelog">changelog</a>
+      </dd>
+    </div>
+    <div>
+      <dt>Claims on this sheet</dt>
+      <dd>{claims}</dd>
+    </div>
+    <div>
+      <dt>Notes</dt>
+      <dd>
+        <a href="/system">System</a> · <a href="/accessibility">Accessibility</a> ·{" "}
+        <a href="/about#ai-tools">AI tools</a>
+      </dd>
+    </div>
+  </dl>
+</footer>
+<style>
+  .site-footer {
+    margin-top: var(--s-9);
+    padding-bottom: var(--s-7);
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--s-5);
+    padding-bottom: var(--s-5);
+  }
+  .ask {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2rem, 1.4rem + 2.2vw, 2.875rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .titleblock {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    border: var(--frame);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+  }
+  .titleblock div {
+    padding: 10px 12px;
+    border-right: var(--frame);
+    border-bottom: var(--frame);
+  }
+  dt {
+    color: var(--muted);
+  }
+  dd {
+    margin: 0;
+  }
+  @media (max-width: 767.98px) {
+    .titleblock div:nth-child(2n) {
+      border-right: 0;
+    }
+    .titleblock div:last-child {
+      grid-column: 1 / -1;
+      border-bottom: 0;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1099.98px) {
+    .titleblock {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .titleblock {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .titleblock div {
+      border-bottom: 0;
+    }
+    .titleblock div:last-child {
+      border-right: 0;
+    }
+  }
+</style>

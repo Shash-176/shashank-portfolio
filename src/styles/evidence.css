@@ -1,0 +1,103 @@
+/* Evidence notes: generated after rendering (src/lib/evidence-render.ts), so styled globally. */
+.note .glyph {
+  display: inline-block;
+  flex: none;
+  vertical-align: -0.15em;
+}
+
+.note {
+  font-size: var(--fs-note);
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.head {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+.method,
+.src {
+  color: var(--muted);
+}
+.method {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+}
+.limit {
+  color: var(--warn);
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+.limit .glyph {
+  flex: none;
+  transform: translateY(2px);
+}
+.claim-text {
+  font-weight: 600;
+}
+.close {
+  align-self: flex-start;
+  margin-top: 4px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  font-size: var(--fs-label);
+  font-family: var(--font-mono);
+  cursor: pointer;
+}
+.close kbd {
+  color: var(--muted);
+}
+
+/* Lens off: margin notes are hidden unless pinned or always shown. The column keeps its width, so text never moves. */
+.note.margin:not(.always) {
+  display: none;
+}
+html[data-lens="on"] .note.margin {
+  display: flex;
+  animation: note-in var(--t-note) var(--ease-out);
+}
+.note.margin[data-preview] {
+  display: flex;
+}
+.note.margin[data-pinned] {
+  display: flex;
+  outline: 2px solid var(--link);
+  outline-offset: 6px;
+  animation: note-in var(--t-fast) var(--ease-out);
+}
+.note.margin[data-pinned] .close {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+@media (max-width: 1099.98px) {
+  .note.margin {
+    border-left: 3px solid var(--strong);
+    padding: 6px 0 6px 12px;
+    background: var(--surface);
+  }
+}
+@keyframes note-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Below the margin breakpoint, "always" notes (the hero's proofs) fold away until tapped or the lens is on. */
+@media (max-width: 1099.98px) {
+  .note.margin.always:not([data-pinned]):not([data-preview]) {
+    display: none;
+  }
+  html[data-lens="on"] .note.margin.always:not([data-pinned]) {
+    display: flex;
+  }
+}

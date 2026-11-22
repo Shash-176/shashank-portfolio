@@ -1,0 +1,94 @@
+---
+// Phones, lens on: a bar pinned to the bottom with the count, "All notes" and "Turn off".
+---
+
+<div class="lens-bar no-print" role="region" aria-label="Evidence lens">
+  <span class="label" data-lens-count></span>
+  <button type="button" class="btn" data-all-notes>
+    All notes
+  </button>
+  <button type="button" class="btn" data-lens-toggle aria-pressed="true">
+    Turn off
+  </button>
+</div>
+<dialog id="notes-sheet" class="sheet" data-sheet aria-labelledby="sheet-title">
+  <div class="sheet-head">
+    <span class="grip" aria-hidden="true"></span>
+    <h2 id="sheet-title">Evidence on this page</h2>
+    <button type="button" class="btn" data-sheet-close>
+      Close
+    </button>
+  </div>
+  <p class="label" data-lens-count></p>
+  <div data-sheet-body></div>
+</dialog>
+<p id="lens-status" class="sr-only" aria-live="polite"></p>
+<style>
+  .lens-bar {
+    display: none;
+  }
+  @media (max-width: 767.98px) {
+    :global(html[data-lens="on"]) .lens-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: var(--z-sticky);
+      padding: var(--s-2) var(--s-3) calc(var(--s-2) + env(safe-area-inset-bottom));
+      background: var(--bg);
+      border-top: 2px solid var(--strong);
+    }
+    :global(html[data-lens="on"]) body {
+      padding-bottom: 72px;
+    }
+    .lens-bar .label {
+      flex: 1;
+      font-size: 0.75rem;
+    }
+  }
+  .sheet {
+    margin: auto 0 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 80dvh;
+    padding: var(--s-3) var(--s-4) var(--s-5);
+    border: 0;
+    border-top: 2px solid var(--strong);
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .sheet::backdrop {
+    background: var(--scrim);
+  }
+  .sheet-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .grip {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 44px;
+    height: 4px;
+    background: var(--strong);
+  }
+  .sheet h2 {
+    font-size: 1.5rem;
+  }
+  .sheet :global(ol) {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    margin-top: var(--s-3);
+  }
+  .sheet :global(li) {
+    border-top: var(--hair);
+    padding-top: var(--s-3);
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+/**
+ * The identity mark. v1 renders static stills; a future 3D renderer replaces only this component's
+ * internals behind the same props. The current stills are a neutral base model, not a likeness.
+ */
+export type AvatarState = "neutral" | "inspecting" | "verified" | "unknown" | "unsafe";
+interface Props {
+  state?: AvatarState;
+  size?: number;
+  caption?: string;
+  ground?: boolean;
+}
+const { state = "neutral", size = 240, caption, ground = true } = Astro.props;
+---
+
+<figure class:list={["avatar", { ground }]} data-avatar data-state={state} style={`--av:${size}px`}>
+  <span class="stage" aria-hidden="true">
+    <img class="av-light" src={`/avatar/mono-light-${state}.svg`} alt="" width={size} height={size} decoding="async" />
+    <img class="av-dark" src={`/avatar/mono-dark-${state}.svg`} alt="" width={size} height={size} decoding="async" />
+  </span>
+  {caption && <figcaption class="label">{caption}</figcaption>}
+</figure>
+<style>
+  .avatar {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+  .stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: var(--av);
+  }
+  .ground .stage {
+    border-bottom: var(--frame);
+    background: repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 7px) bottom / 100% 26% no-repeat;
+  }
+  img {
+    width: var(--av);
+    height: var(--av);
+  }
+  .av-dark {
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .av-light {
+      display: none;
+    }
+    :global(:root:not([data-theme="light"])) .av-dark {
+      display: block;
+    }
+    :global(:root:not([data-theme="light"])) .ground .stage {
+      background:
+        radial-gradient(circle at 50% 46%, #2f3239 0 32%, transparent 33%),
+        repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 7px) bottom / 100% 26% no-repeat;
+    }
+  }
+  :global(:root[data-theme="dark"]) .av-light {
+    display: none;
+  }
+  :global(:root[data-theme="dark"]) .av-dark {
+    display: block;
+  }
+  :global(:root[data-theme="dark"]) .ground .stage {
+    background:
+      radial-gradient(circle at 50% 46%, #2f3239 0 32%, transparent 33%),
+      repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 7px) bottom / 100% 26% no-repeat;
+  }
+</style>

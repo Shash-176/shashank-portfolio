@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 260" width="240" height="260">
+<polygon points="18,260 44,214 94,194 120,226 146,194 196,214 222,260" fill="none" stroke="#ECEAE3" stroke-width="1.6" stroke-linejoin="round" />
+<polygon points="100,156 140,156 146,194 120,226 94,194" fill="none" stroke="#ECEAE3" stroke-width="1.6" stroke-linejoin="round" />
+<g transform="translate(0 0) rotate(0 120 168)">
+<polygon points="84,58 120,46 156,58 166,96 160,134 144,160 120,172 96,160 80,134 74,96" fill="none" stroke="#ECEAE3" stroke-width="1.6" stroke-linejoin="round" />
+<polyline points="74,96 120,96 166,96" fill="none" stroke="#ECEAE3" stroke-width="1.6" stroke-linejoin="round"/><polyline points="120,96 96,124 120,130 144,124 120,96" fill="none" stroke="#ECEAE3" stroke-width="1.6" stroke-linejoin="round"/><polyline points="96,160 120,152 144,160" fill="none" stroke="#ECEAE3" stroke-width="1.6" stroke-linejoin="round"/>
+<line x1="128" y1="108" x2="160" y2="94" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="129" y1="117" x2="159" y2="103" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="130" y1="126" x2="158" y2="112" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="131" y1="135" x2="157" y2="121" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="132" y1="144" x2="156" y2="130" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="133" y1="153" x2="155" y2="139" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="134" y1="162" x2="154" y2="148" stroke="#ECEAE3" stroke-width="1"/>
+<polygon points="74,98 66,102 68,124 79,130" fill="none" stroke="#ECEAE3" stroke-width="1.6" stroke-linejoin="round" />
+<polygon points="166,98 174,102 172,124 161,130" fill="none" stroke="#ECEAE3" stroke-width="1.6" stroke-linejoin="round" />
+<polygon points="72,102 69,66 88,42 122,30 154,40 171,66 168,102 163,82 151,64 118,62 96,70 79,86" fill="none" stroke="#ECEAE3" stroke-width="1.6" stroke-linejoin="round" />
+<line x1="78" y1="66" x2="84" y2="44" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="88" y1="61" x2="94" y2="42" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="98" y1="56" x2="104" y2="40" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="108" y1="51" x2="114" y2="38" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="118" y1="46" x2="124" y2="36" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="128" y1="51" x2="134" y2="38" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="138" y1="56" x2="144" y2="40" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="148" y1="61" x2="154" y2="42" stroke="#ECEAE3" stroke-width="1"/>
+<line x1="158" y1="66" x2="164" y2="44" stroke="#ECEAE3" stroke-width="1"/>
+<polygon points="88,99 108,96 108,99 88,102" fill="#ECEAE3" />
+<polygon points="132,96 152,99 152,102 132,99" fill="#ECEAE3" />
+<polygon points="92,107 100,103 108,107 100,110.5" fill="#ECEAE3" />
+<polygon points="132,107 140,103 148,107 140,110.5" fill="#ECEAE3" />
+<polygon points="109,145 120,147.5 131,145 120,149.5" fill="#ECEAE3" />
+</g></svg>
