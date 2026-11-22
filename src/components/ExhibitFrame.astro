@@ -1,0 +1,261 @@
+---
+/** Shared exhibit grammar (freeze §9.3): figure label, claim, stage, controls, verdict, "does not prove", mode label. */
+interface Props {
+  fig: string;
+  title: string;
+  claim: string;
+  mode: string;
+  id: string;
+  doesNotProve: string;
+  start?: number;
+}
+const { fig, title, claim, mode, id, doesNotProve, start = 1 } = Astro.props;
+---
+
+<figure class="exhibit" id={id} data-exhibit data-start={start} aria-labelledby={`${id}-title`} tabindex="-1">
+  <header class="ex-head">
+    <h2 id={`${id}-title`}>
+      <span class="label">{fig}</span> {title}
+    </h2>
+    <p class="label mode">{mode}</p>
+  </header>
+  <p class="ex-claim">
+    <span class="label">Claim under test</span> {claim}
+  </p>
+  <slot />
+  <p class="dnp">
+    <strong>What this does not prove.</strong> {doesNotProve}
+  </p>
+  <p class="sr-only" aria-live="polite" data-ex-live></p>
+</figure>
+<style is:global>
+  .exhibit {
+    margin: 0;
+    border: var(--frame);
+    background: var(--surface);
+    padding: var(--s-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    scroll-margin-top: var(--s-4);
+  }
+  .exhibit:focus {
+    outline: none;
+  }
+  @media (min-width: 768px) {
+    .exhibit {
+      padding: var(--s-5);
+    }
+  }
+  .ex-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-2) var(--s-4);
+  }
+  .ex-head h2 {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 1.75rem);
+    display: flex;
+    gap: var(--s-3);
+    align-items: baseline;
+  }
+  .ex-claim {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 1.0625rem;
+  }
+  .dnp {
+    border-left: 3px solid var(--warn);
+    padding-left: var(--s-3);
+    font-size: var(--fs-note);
+  }
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  .step {
+    border-top: var(--hair);
+    padding-top: var(--s-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .step h3 {
+    font-size: 1.3125rem;
+    display: flex;
+    gap: var(--s-3);
+    align-items: baseline;
+  }
+  .step h3:focus {
+    outline: none;
+  }
+  .rail {
+    display: none;
+  }
+  .ex-controls {
+    display: none;
+  }
+  html.js [data-exhibit] .rail {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  html.js [data-exhibit] .rail button {
+    min-height: 44px;
+    border: 0;
+    border-top: 6px solid var(--rule);
+    background: transparent;
+    text-align: left;
+    padding: 6px 2px 0;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  html.js [data-exhibit] .rail button.done {
+    border-top-color: var(--ink);
+    color: var(--ink);
+  }
+  html.js [data-exhibit] .rail button[aria-current="step"] {
+    border-top-color: var(--ink);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  html.js [data-exhibit] .step {
+    border-top: 0;
+    padding-top: 0;
+    animation: step-in var(--t-step) var(--ease-out);
+    min-height: 300px;
+  }
+  html.js [data-exhibit] .step[hidden] {
+    display: none;
+  }
+  html.js [data-exhibit] .ex-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: center;
+  }
+  .ex-controls .spacer {
+    flex: 1;
+  }
+  @keyframes step-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (max-width: 767.98px) {
+    html.js [data-exhibit] .rail button span {
+      display: none;
+    }
+    html.js [data-exhibit] .ex-controls {
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      padding: var(--s-2) 0;
+      border-top: var(--hair);
+      z-index: 2;
+    }
+    html.js [data-exhibit] .ex-controls .btn {
+      flex: 1;
+    }
+  }
+  .verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 2px solid currentColor;
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 600;
+    align-self: flex-start;
+    animation: verdict-in var(--t-verdict) var(--ease-out);
+  }
+  .verdict.bad {
+    color: var(--bad);
+  }
+  .verdict.unknown {
+    color: var(--ink);
+    background: repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 6px);
+  }
+  .verdict.ok {
+    color: var(--ok);
+  }
+  @keyframes verdict-in {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  }
+  @media print {
+    .exhibit {
+      break-inside: auto;
+    }
+    .step {
+      break-inside: avoid;
+    }
+  }
+</style>
+<script>
+  // Stepper for recorded exhibits. Without JavaScript every step stays visible, in order.
+  document.querySelectorAll<HTMLElement>("[data-exhibit]").forEach((fig) => {
+    const steps = [...fig.querySelectorAll<HTMLElement>(".step")];
+    if (!steps.length) return;
+    const rail = [...fig.querySelectorAll<HTMLButtonElement>(".rail button")];
+    const live = fig.querySelector("[data-ex-live]");
+    const back = fig.querySelector<HTMLButtonElement>("[data-ex='back']");
+    const next = fig.querySelector<HTMLButtonElement>("[data-ex='next']");
+    let at = Math.min(steps.length, Math.max(1, Number(fig.dataset.start ?? 1))) - 1;
+    const show = (i: number, user: boolean) => {
+      at = Math.min(steps.length - 1, Math.max(0, i));
+      steps.forEach((s, k) => (s.hidden = k !== at));
+      rail.forEach((b, k) => {
+        b.classList.toggle("done", k < at);
+        if (k === at) b.setAttribute("aria-current", "step");
+        else b.removeAttribute("aria-current");
+      });
+      if (back) back.disabled = at === 0;
+      if (next) {
+        next.hidden = at === steps.length - 1;
+        next.textContent = at === steps.length - 2 ? "See the verdict →" : "Next →";
+      }
+      fig.querySelector<HTMLElement>("[data-ex='replay']")?.toggleAttribute("hidden", at !== steps.length - 1);
+      const h = steps[at].querySelector<HTMLElement>("h3");
+      if (user && h) {
+        h.focus();
+        if (live) live.textContent = `Step ${at + 1} of ${steps.length}: ${h.textContent?.replace(/^\s*\d+\s*/, "")}`;
+      }
+    };
+    fig.addEventListener("click", (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>("[data-ex], [data-goto]");
+      if (!b) return;
+      if (b.dataset.goto) return show(Number(b.dataset.goto) - 1, true);
+      if (b.dataset.ex === "back") show(at - 1, true);
+      if (b.dataset.ex === "next" || b.dataset.ex === "advance") show(at + 1, true);
+      if (b.dataset.ex === "replay") show(0, true);
+    });
+    fig.addEventListener("keydown", (e) => {
+      if ((e.target as HTMLElement).closest("input, textarea, select")) return;
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        show(at + 1, true);
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        show(at - 1, true);
+      }
+    });
+    steps.forEach((s) => s.querySelector("h3")?.setAttribute("tabindex", "-1"));
+    show(at, false);
+  });
+</script>

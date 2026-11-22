@@ -1,0 +1,354 @@
+---
+/**
+ * Exploded architecture diagram (design freeze §10), drawn from diagram records.
+ * Without JavaScript: the separated SVG plus the ordered text equivalent. With it: assemble,
+ * previous/next and direct layer selection. Phones get the vertical stack only.
+ */
+import { getEntry } from "astro:content";
+interface Props {
+  id: string;
+  fig?: string;
+  compact?: boolean;
+}
+const { id, fig = "FIG. 1", compact = false } = Astro.props;
+const entry = await getEntry("diagrams", id);
+if (!entry) throw new Error(`Unknown diagram "${id}"`);
+const d = entry.data;
+const W = 760,
+  PW = 300,
+  PH = 60,
+  X0 = 10,
+  TOP = 40,
+  GAP = 92;
+const CX = X0 + PW / 2;
+const n = d.layers.length;
+const H = TOP + PH / 2 + (n - 1) * GAP + PH / 2 + 46;
+const LX = X0 + PW + 34;
+const uid = `dg-${id}`;
+---
+
+<figure
+  class:list={["diagram", { compact }]}
+  data-diagram
+  data-selected={d.selected}
+  data-mode="separated"
+  style={`--n:${n}`}
+  id={uid}
+>
+  <div class="svgwrap" aria-hidden="true">
+    <svg viewBox={`0 0 ${W} ${H}`} role="presentation" focusable="false">
+      <g class="guides">
+        <line x1={X0} y1={TOP + PH / 2} x2={X0} y2={TOP + PH / 2 + (n - 1) * GAP} />
+        <line x1={X0 + PW} y1={TOP + PH / 2} x2={X0 + PW} y2={TOP + PH / 2 + (n - 1) * GAP} />
+        <line x1={CX} y1={TOP + PH} x2={CX} y2={TOP + PH / 2 + (n - 1) * GAP} />
+      </g>
+      {d.boundary && (
+        <g class="boundary">
+          <line
+            x1="0"
+            x2={W}
+            y1={TOP + PH / 2 + (d.boundary.after + 0.5) * GAP}
+            y2={TOP + PH / 2 + (d.boundary.after + 0.5) * GAP}
+          />
+          <text x={W - 4} y={TOP + PH / 2 + (d.boundary.after + 0.5) * GAP + 17} text-anchor="end">
+            {d.boundary.rule}
+          </text>
+        </g>
+      )}
+      {d.layers.map((l, i) => {
+        const y = TOP + PH / 2;
+        return (
+          <g class:list={["layer", { selected: i === d.selected }]} data-layer={i} style={`--i:${i}`}>
+            <polygon class="plate" points={`${X0},${y} ${CX},${y - PH / 2} ${X0 + PW},${y} ${CX},${y + PH / 2}`} />
+            {l.modules.map((_, k) => {
+              const t = (k + 1) / (l.modules.length + 1);
+              const mx = X0 + PW * (0.18 + 0.64 * t),
+                mw = PW * 0.12,
+                mh = PH * 0.26;
+              return (
+                <polygon
+                  class="module"
+                  points={`${mx - mw / 2},${y} ${mx},${y - mh / 2} ${mx + mw / 2},${y} ${mx},${y + mh / 2}`}
+                />
+              );
+            })}
+            <g class="callout">
+              <line x1={X0 + PW} y1={y} x2={LX - 8} y2={y} />
+              <text x={LX} y={y - 4} class="name">
+                {i + 1} {l.name}
+              </text>
+              <text x={LX} y={y + 14} class="sub">
+                {l.purpose}
+              </text>
+              <text x={LX} y={y + 30} class="mods">
+                {l.modules.join(" · ")}
+              </text>
+            </g>
+          </g>
+        );
+      })}
+      <text class="assembled-label" x={LX} y={TOP + PH / 2 + 8}>
+        {n} layers · pull apart to read
+      </text>
+    </svg>
+  </div>
+  <figcaption class="label">
+    {fig} — {d.title}.{" "}
+    <span class="js-only">
+      Layer <span data-current>{d.selected + 1}</span> of {n} selected.
+    </span>
+  </figcaption>
+  <div class="diagram-controls js-only" role="group" aria-label={`${d.title}: controls`}>
+    <button type="button" class="btn" data-dg="toggle" aria-pressed="false">
+      Assemble
+    </button>
+    <button type="button" class="btn" data-dg="prev">
+      ← Previous layer
+    </button>
+    <button type="button" class="btn" data-dg="next">
+      Next layer →
+    </button>
+  </div>
+  <ol class="layers" aria-label={`${d.title}, layer by layer`}>
+    {d.layers.map((l, i) => (
+      <li data-layer={i} class:list={{ selected: i === d.selected }}>
+        <button type="button" class="pick" aria-pressed={i === d.selected ? "true" : "false"} data-pick={i}>
+          <span class="mono">{i + 1}</span> <strong>{l.name}</strong>
+        </button>
+        <span class="purpose">{l.purpose}.</span> <span class="detail">{l.detail}</span>
+        {d.boundary && d.boundary.after === i && (
+          <span class="rule">
+            <strong>Boundary below:</strong> {d.boundary.rule}.
+          </span>
+        )}
+      </li>
+    ))}
+  </ol>
+</figure>
+<style>
+  .diagram {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    --gap: 92;
+  }
+  .diagram[data-mode="assembled"] {
+    --gap: 18;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .guides line {
+    stroke: var(--muted);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+    transition: opacity var(--t-diagram) var(--ease-in-out);
+  }
+  [data-mode="assembled"] .guides,
+  [data-mode="assembled"] .boundary {
+    opacity: 0;
+  }
+  .boundary line {
+    stroke: var(--bad);
+    stroke-width: 1.5;
+    stroke-dasharray: 8 5;
+  }
+  .boundary text {
+    fill: var(--bad);
+    font-size: 12px;
+  }
+  .layer {
+    transform: translateY(calc(var(--i) * var(--gap) * 1px));
+    transition: transform var(--t-diagram) var(--ease-in-out);
+  }
+  .plate {
+    fill: var(--surface);
+    stroke: var(--ink);
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+    transition: fill var(--t-ui) linear;
+  }
+  .module {
+    fill: var(--tint);
+    stroke: var(--ink);
+    stroke-width: 1;
+  }
+  .layer.selected .plate {
+    fill: var(--chip);
+    stroke-width: 2.4;
+  }
+  .layer.selected .module {
+    fill: var(--surface);
+  }
+  .callout line {
+    stroke: var(--ink);
+    stroke-width: 1;
+  }
+  .name {
+    fill: var(--ink);
+  }
+  .layer.selected .name {
+    font-weight: 700;
+  }
+  .sub,
+  .mods {
+    fill: var(--muted);
+    font-size: 12px;
+  }
+  .mods {
+    font-size: 11.5px;
+  }
+  .callout,
+  .assembled-label {
+    transition: opacity var(--t-ui) linear;
+  }
+  .assembled-label {
+    fill: var(--ink);
+    opacity: 0;
+  }
+  [data-mode="assembled"] .callout {
+    opacity: 0;
+  }
+  [data-mode="assembled"] .assembled-label {
+    opacity: 1;
+  }
+  .diagram-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .layers {
+    list-style: none;
+    padding: 0 !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: var(--frame);
+  }
+  .layers li {
+    padding: 10px 12px;
+    border-bottom: var(--hair);
+    max-width: none !important;
+    margin: 0 !important;
+  }
+  .layers li.selected {
+    background: var(--tint);
+    box-shadow: inset 4px 0 0 var(--chip);
+  }
+  .pick {
+    display: inline-flex;
+    gap: 8px;
+    align-items: baseline;
+    border: 0;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: left;
+  }
+  .pick:hover strong {
+    text-decoration: underline;
+  }
+  :global(html:not(.js)) .pick {
+    pointer-events: none;
+  }
+  .purpose {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.9375rem;
+  }
+  .detail,
+  .rule {
+    display: block;
+    font-size: var(--fs-note);
+    color: var(--muted);
+  }
+  .rule {
+    color: var(--bad);
+  }
+  .js-only {
+    display: none;
+  }
+  :global(html.js) .js-only {
+    display: revert;
+  }
+  :global(html.js) .diagram-controls.js-only {
+    display: flex;
+  }
+  @media (min-width: 900px) {
+    .layers {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--s-5);
+    }
+  }
+  /* Phones: the vertical stack is the diagram. */
+  @media (max-width: 767.98px) {
+    .svgwrap,
+    [data-dg="toggle"] {
+      display: none !important;
+    }
+    .layers li {
+      border: var(--frame);
+      margin-top: -1px !important;
+      background: var(--surface);
+    }
+    .layers li.selected {
+      background: var(--chip);
+      color: var(--hl-ink);
+      box-shadow: none;
+    }
+    .layers li.selected .detail,
+    .layers li.selected .purpose {
+      color: var(--hl-ink);
+    }
+  }
+  @media print {
+    .svgwrap {
+      break-inside: avoid;
+    }
+    .diagram {
+      --gap: 92;
+    }
+  }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>("[data-diagram]").forEach((fig) => {
+    const n = fig.querySelectorAll(".layer").length;
+    const cur = fig.querySelector("[data-current]");
+    const select = (i: number) => {
+      const k = (i + n) % n;
+      fig.dataset.selected = String(k);
+      fig
+        .querySelectorAll<SVGGElement>(".layer")
+        .forEach((g) => g.classList.toggle("selected", Number(g.dataset.layer) === k));
+      fig
+        .querySelectorAll<HTMLElement>(".layers li")
+        .forEach((li) => li.classList.toggle("selected", Number(li.dataset.layer) === k));
+      fig
+        .querySelectorAll<HTMLButtonElement>("[data-pick]")
+        .forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.pick) === k)));
+      if (cur) cur.textContent = String(k + 1);
+    };
+    select(Number(fig.dataset.selected ?? 0));
+    fig.addEventListener("click", (e) => {
+      const t = e.target as HTMLElement;
+      const b = t.closest<HTMLButtonElement>("[data-dg], [data-pick]");
+      if (!b) return;
+      const sel = Number(fig.dataset.selected);
+      if (b.dataset.pick !== undefined) return select(Number(b.dataset.pick));
+      if (b.dataset.dg === "prev") return select(sel - 1);
+      if (b.dataset.dg === "next") return select(sel + 1);
+      if (b.dataset.dg === "toggle") {
+        const assembled = fig.dataset.mode !== "assembled";
+        fig.dataset.mode = assembled ? "assembled" : "separated";
+        b.setAttribute("aria-pressed", String(assembled));
+        b.textContent = assembled ? "Pull apart" : "Assemble";
+      }
+    });
+  });
+</script>

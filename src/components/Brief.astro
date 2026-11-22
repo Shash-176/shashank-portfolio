@@ -1,0 +1,58 @@
+---
+// The four-line brief: problem, idea, evidence, limit. A recruiter can stop here.
+import Ev from "./Ev.astro";
+interface Props {
+  brief: { problem: string; idea: string; evidence: string; limit: string };
+  evidence?: string;
+}
+const { brief, evidence } = Astro.props;
+const rows = [
+  ["Problem", brief.problem],
+  ["Idea", brief.idea],
+  ["Evidence", brief.evidence],
+  ["Limit", brief.limit],
+] as const;
+---
+
+<dl class="brief">
+  {rows.map(([k, v]) => (
+    <div>
+      <dt>{k}</dt>
+      <dd>{k === "Evidence" && evidence ? <Ev id={evidence}>{v}</Ev> : v}</dd>
+    </div>
+  ))}
+</dl>
+<style>
+  .brief {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: 0;
+    border: var(--frame);
+  }
+  .brief div {
+    padding: 12px 16px;
+    border-bottom: var(--frame);
+  }
+  .brief div:last-child {
+    border-bottom: 0;
+  }
+  dt {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    color: var(--muted);
+  }
+  dd {
+    margin: 4px 0 0;
+  }
+  @media (min-width: 768px) {
+    .brief {
+      grid-template-columns: 1fr 1fr;
+    }
+    .brief div:nth-child(odd) {
+      border-right: var(--frame);
+    }
+    .brief div:nth-child(3) {
+      border-bottom: 0;
+    }
+  }
+</style>

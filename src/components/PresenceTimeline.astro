@@ -1,0 +1,334 @@
+---
+/**
+ * Smart Attendance presence timeline on one synthetic hour. No people, images or biometric data.
+ * Server-rendered with the default outage, so it reads without JavaScript; buttons and drag recompute it.
+ */
+import ExhibitFrame from "./ExhibitFrame.astro";
+import Ev from "./Ev.astro";
+import Glyph from "./Glyph.astro";
+import { presence, clock, statusWords, POLICY, HOUR } from "@/lib/presence";
+interface Props {
+  fig?: string;
+}
+const { fig = "FIG. 2" } = Astro.props;
+const o = { start: 24, length: 12 };
+const r = presence(o);
+const pct = (m: number) => `${(m / HOUR) * 100}%`;
+const ticks = [0, 12, 24, 36, 48, 60];
+---
+
+<ExhibitFrame
+  id="presence"
+  fig={fig}
+  title="Unknown is not absent"
+  claim="“No detection means absent.”"
+  mode="Synthetic hour · no real people, images or biometric data"
+  doesNotProve="It shows the rule on an invented hour. It says nothing about recognition accuracy, which the project has not measured."
+>
+  <div
+    class="tl"
+    data-presence
+    data-start={o.start}
+    data-length={o.length}
+    style={`--s:${pct(o.start)};--l:${pct(o.length)}`}
+  >
+    <div class="axis" aria-hidden="true">
+      {ticks.map((t) => (
+        <span style={`left:${pct(t)}`}>{clock(t)}</span>
+      ))}
+    </div>
+    <div class="track-wrap">
+      {[
+        { key: "camera", label: "Camera", on: "online", off: "offline" },
+        { key: "naive", label: "A naive system", on: "present", off: "absent" },
+        { key: "engine", label: "This engine", on: "observed", off: "unknown" },
+      ].map((row) => (
+        <div class={`trow ${row.key}`}>
+          <span class="rlabel">{row.label}</span>
+          <span class="track" aria-hidden="true">
+            <span class="seg on before"></span>
+            <span class="seg off" data-off-label>
+              {row.off}
+            </span>
+            <span class="seg on after"></span>
+          </span>
+        </div>
+      ))}
+      <span class="drag" data-drag aria-hidden="true" title="Drag to move the outage"></span>
+    </div>
+    <p class="now">
+      <span class="label">Camera offline</span>{" "}
+      <strong data-p="window">
+        {clock(o.start)}–{clock(o.start + o.length)} ({o.length} min)
+      </strong>
+    </p>
+    <div class="ex-controls" role="group" aria-label="Move the camera outage">
+      <button type="button" class="btn" data-move="earlier">
+        ← Earlier
+      </button>
+      <button type="button" class="btn" data-move="later">
+        Later →
+      </button>
+      <button type="button" class="btn" data-move="shorter">
+        Shorter
+      </button>
+      <button type="button" class="btn" data-move="longer">
+        Longer
+      </button>
+    </div>
+    <div class="table-scroll">
+      <table class="readout">
+        <caption class="label">What gets recorded for this hour</caption>
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Present</th>
+            <th scope="col">Unknown</th>
+            <th scope="col">Absent</th>
+            <th scope="col">
+              Status (policy: {POLICY.requiredPct}% required, {POLICY.minCoverage * 100}% minimum coverage)
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">A naive system</th>
+            <td data-p="n-present">{r.naive.present} min</td>
+            <td>no such state</td>
+            <td data-p="n-absent">{r.naive.absent} min</td>
+            <td data-p="n-status">
+              {statusWords(r.naive.status)} ({Math.round(r.naive.pct)}%)
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">This engine</th>
+            <td data-p="e-present">{r.engine.observed} min</td>
+            <td data-p="e-unknown">{r.engine.unknown} min</td>
+            <td>0 min</td>
+            <td data-p="e-status">
+              {statusWords(r.engine.status)} ({r.engine.pct}% of observable time; at least{" "}
+              {Math.round(r.engine.lowerBound)}% of the hour)
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="verdict unknown">
+    <Glyph state="Unknown" size={20} /> UNKNOWN · <span data-p="unknown-min">{o.length}</span> min
+  </p>
+  <p>
+    <Ev id="sa-rules">No evidence is not evidence of absence.</Ev> The gap stays unknown until a person or a second
+    source settles it. Stretch the outage past 12 minutes and coverage falls below 80%, so the engine answers
+    INCONCLUSIVE. Past 15 minutes, the naive system marks a person who never left as below the requirement.
+  </p>
+</ExhibitFrame>
+<style>
+  .tl {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .axis {
+    position: relative;
+    height: 18px;
+    margin-left: var(--lab);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--muted);
+  }
+  .axis span {
+    position: absolute;
+    transform: translateX(-50%);
+  }
+  .axis span:first-child {
+    transform: none;
+  }
+  .axis span:last-child {
+    transform: translateX(-100%);
+  }
+  .tl {
+    --lab: 0px;
+  }
+  @media (min-width: 768px) {
+    .tl {
+      --lab: 150px;
+    }
+  }
+  .track-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .trow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  @media (min-width: 768px) {
+    .trow {
+      grid-template-columns: 150px 1fr;
+      align-items: center;
+      gap: 0;
+    }
+  }
+  .rlabel {
+    font-size: var(--fs-note);
+  }
+  .track {
+    position: relative;
+    display: flex;
+    height: 30px;
+    border: 1.5px solid var(--ink);
+    overflow: hidden;
+  }
+  .seg {
+    display: block;
+    height: 100%;
+  }
+  .before {
+    width: var(--s);
+  }
+  .off {
+    width: var(--l);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    overflow: hidden;
+    white-space: nowrap;
+    border-left: 2px solid var(--bad);
+    border-right: 2px solid var(--bad);
+  }
+  .after {
+    flex: 1;
+  }
+  .on {
+    background: var(--ink);
+  }
+  .camera .off {
+    background: var(--bg);
+    color: var(--muted);
+  }
+  .naive .off {
+    background: linear-gradient(to top right, transparent 47%, var(--bad) 47% 53%, transparent 53%), var(--bg);
+    color: var(--bad);
+    font-weight: 600;
+  }
+  .engine .off {
+    background: repeating-linear-gradient(135deg, var(--hatch) 0 1.2px, transparent 1.2px 5px), var(--bg);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .drag {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--lab) + (100% - var(--lab)) * var(--sn, 0.4));
+    width: calc((100% - var(--lab)) * var(--ln, 0.2));
+    cursor: grab;
+    touch-action: none;
+    display: none;
+  }
+  :global(html.js) .drag {
+    display: block;
+  }
+  .drag:active {
+    cursor: grabbing;
+  }
+  .readout {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+  .readout caption {
+    text-align: left;
+    margin-bottom: 6px;
+  }
+  .readout th,
+  .readout td {
+    text-align: left;
+    padding: 8px 10px 8px 0;
+    border-bottom: var(--hair);
+    vertical-align: top;
+  }
+  .readout thead th {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 400;
+    color: var(--muted);
+    border-bottom: var(--frame);
+  }
+  .readout tbody th {
+    font-weight: 600;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+  }
+  .naive .off {
+    text-decoration: none;
+  }
+</style>
+<script>
+  import { presence, clampOutage, clock, statusWords, HOUR } from "@/lib/presence";
+  document.querySelectorAll<HTMLElement>("[data-presence]").forEach((tl) => {
+    const fig = tl.closest<HTMLElement>("[data-exhibit]");
+    const live = fig?.querySelector("[data-ex-live]");
+    let o = { start: Number(tl.dataset.start), length: Number(tl.dataset.length) };
+    const set = (sel: string, text: string) =>
+      fig?.querySelectorAll(`[data-p="${sel}"]`).forEach((el) => (el.textContent = text));
+    const render = (announce: boolean) => {
+      o = clampOutage(o);
+      const r = presence(o);
+      tl.style.setProperty("--s", `${(o.start / HOUR) * 100}%`);
+      tl.style.setProperty("--l", `${(o.length / HOUR) * 100}%`);
+      tl.style.setProperty("--sn", String(o.start / HOUR));
+      tl.style.setProperty("--ln", String(o.length / HOUR));
+      set("window", `${clock(o.start)}–${clock(o.start + o.length)} (${o.length} min)`);
+      set("n-present", `${r.naive.present} min`);
+      set("n-absent", `${r.naive.absent} min`);
+      set("n-status", `${statusWords(r.naive.status)} (${Math.round(r.naive.pct)}%)`);
+      set("e-present", `${r.engine.observed} min`);
+      set("e-unknown", `${r.engine.unknown} min`);
+      set(
+        "e-status",
+        r.engine.status === "INCONCLUSIVE"
+          ? `inconclusive (coverage ${Math.round(r.engine.coverage * 100)}% is below the 80% minimum)`
+          : `${statusWords(r.engine.status)} (${r.engine.pct}% of observable time; at least ${Math.round(r.engine.lowerBound)}% of the hour)`,
+      );
+      set("unknown-min", String(o.length));
+      if (announce && live)
+        live.textContent = `Outage ${clock(o.start)} to ${clock(o.start + o.length)}. Naive system: ${o.length} minutes absent, ${statusWords(r.naive.status)}. Engine: ${o.length} minutes unknown, ${statusWords(r.engine.status)}.`;
+    };
+    fig?.addEventListener("click", (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>("[data-move]");
+      if (!b) return;
+      const step = 2;
+      if (b.dataset.move === "earlier") o.start -= step;
+      if (b.dataset.move === "later") o.start += step;
+      if (b.dataset.move === "shorter") o.length -= step;
+      if (b.dataset.move === "longer") o.length += step;
+      render(true);
+    });
+    const drag = tl.querySelector<HTMLElement>("[data-drag]");
+    const wrap = tl.querySelector<HTMLElement>(".track");
+    if (drag && wrap) {
+      let x0 = 0,
+        s0 = 0;
+      drag.addEventListener("pointerdown", (e) => {
+        x0 = e.clientX;
+        s0 = o.start;
+        drag.setPointerCapture(e.pointerId);
+      });
+      drag.addEventListener("pointermove", (e) => {
+        if (!drag.hasPointerCapture(e.pointerId)) return;
+        o.start = s0 + ((e.clientX - x0) / wrap.getBoundingClientRect().width) * HOUR;
+        render(false);
+      });
+      drag.addEventListener("pointerup", () => render(true));
+    }
+    render(false);
+  });
+</script>

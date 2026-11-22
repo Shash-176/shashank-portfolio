@@ -1,0 +1,69 @@
+---
+// A case-study section: heading plus content, with its evidence margin.
+import Annotated from "./Annotated.astro";
+import { slug } from "@/lib/slug";
+interface Props {
+  title: string;
+  locked?: boolean;
+}
+const { title, locked = false } = Astro.props;
+const id = slug(title);
+---
+
+<Annotated id={id} labelledby={`${id}-h`} class="cs-section">
+  <h2 id={`${id}-h`}>{title}</h2>
+  <div class="cs-body prose-wide">
+    <slot />
+  </div>
+  {locked && <p class="label locked">This section cannot be collapsed.</p>}
+</Annotated>
+<style is:global>
+  .cs-section {
+    padding: var(--s-6) 0;
+    border-top: var(--hair);
+    scroll-margin-top: var(--s-4);
+  }
+  .cs-section h2 {
+    font-size: var(--fs-section);
+    margin-bottom: var(--s-3);
+  }
+  .cs-body > * + * {
+    margin-top: var(--s-4);
+  }
+  .cs-body p,
+  .cs-body li {
+    max-width: 66ch;
+  }
+  .cs-body ul,
+  .cs-body ol {
+    padding-left: 1.25em;
+  }
+  .cs-body li + li {
+    margin-top: 6px;
+  }
+  .cs-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.96875rem;
+  }
+  .cs-body th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 400;
+    color: var(--muted);
+    border-bottom: var(--frame);
+    padding: 8px 12px 8px 0;
+  }
+  .cs-body td {
+    border-bottom: var(--hair);
+    padding: 10px 12px 10px 0;
+    vertical-align: top;
+  }
+  .cs-body table {
+    border-top: var(--frame);
+  }
+  .locked {
+    margin-top: var(--s-3);
+  }
+</style>

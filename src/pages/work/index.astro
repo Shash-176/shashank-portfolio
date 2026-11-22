@@ -1,0 +1,104 @@
+---
+import { getCollection } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import ProjectRow from "@/components/ProjectRow.astro";
+import State from "@/components/State.astro";
+const projects = (await getCollection("projects"))
+  .filter((p) => p.data.status === "published")
+  .sort((a, b) => a.data.order - b.data.order);
+const full = projects.filter((p) => p.data.depth === "full").length;
+const FILTER_AT = 8;
+---
+
+<Base
+  title="Work"
+  description="Four engineering projects, ordered by the strength of their evidence: PlanProof, Smart Attendance, Graph-Augmented RAG and the Research Data Platform."
+  sheet="Work · 2 of 6"
+  active="work"
+>
+  <div class="page">
+    <header class="head">
+      <h1>Work</h1>
+      <p class="label">
+        {projects.length} projects · {full} full case studies · {projects.length - full} short · ordered by strength of
+        evidence
+      </p>
+      <p class="note">
+        Featured rows are taller because they hold more evidence, not because they are newer.
+        {projects.length >= FILTER_AT ? "" : " Filters appear at eight projects."}
+      </p>
+    </header>
+    <ol class="rows">
+      {projects.map((p, i) => (
+        <ProjectRow project={p} index={i + 1} />
+      ))}
+    </ol>
+    <section class="also" aria-labelledby="also-h">
+      <h2 id="also-h">Also</h2>
+      <ul>
+        <li>
+          <a href="/research">
+            <strong>Usage-Aware Progressive Image Retention</strong> · research
+          </a>{" "}
+          <State state="Research in progress" word="Not published" size={13} />
+        </li>
+        <li>
+          <a href="/about#leadership">
+            <strong>ICON</strong> · Head of Development Team
+          </a>{" "}
+          <State state="Stated" size={13} />
+        </li>
+      </ul>
+    </section>
+  </div>
+</Base>
+<style>
+  .head {
+    padding: var(--s-6) 0 var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+  h1 {
+    font-size: var(--fs-title);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .note {
+    color: var(--muted);
+    font-size: var(--fs-note);
+    max-width: 60ch;
+  }
+  .rows {
+    list-style: none;
+    padding: 0;
+    border-top: var(--bold-line);
+  }
+  .also {
+    margin-top: var(--s-7);
+  }
+  .also h2 {
+    font-size: var(--fs-section);
+    margin-bottom: var(--s-3);
+  }
+  .also ul {
+    list-style: none;
+    padding: 0;
+    border-top: var(--frame);
+  }
+  .also li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: var(--hair);
+  }
+  .also a {
+    text-decoration: none;
+  }
+  .also a:hover strong {
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,86 @@
+---
+// The six states from shared/presence_math.py, in its precedence order. Pattern and word, never colour alone.
+const states = [
+  ["Manually absent", "outline-x", "A teacher marked the person absent."],
+  ["Observed", "solid", "Within a verified sighting’s sample window."],
+  ["Manually present", "outline", "A teacher marked the person present."],
+  [
+    "Inferred",
+    "light",
+    "Policy grace of up to 10 s after a sighting, while the camera was covering. Granted, never verified.",
+  ],
+  ["Absent", "cross", "The camera was covering and the person was not seen."],
+  ["Unknown", "hatch", "The camera was not covering. Downtime is never absence."],
+] as const;
+---
+
+<ol class="states">
+  {states.map(([n, k, d]) => (
+    <li>
+      <span class={`sw ${k}`} aria-hidden="true"></span>
+      <strong>{n}</strong>
+      <span>{d}</span>
+    </li>
+  ))}
+</ol>
+<style>
+  .states {
+    list-style: none;
+    padding: 0 !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: var(--frame);
+    counter-reset: s;
+  }
+  @media (min-width: 768px) {
+    .states {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: var(--s-4);
+    }
+  }
+  li {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 2px 10px;
+    padding: 12px 0;
+    border-bottom: var(--hair);
+    margin: 0 !important;
+    counter-increment: s;
+  }
+  li span:last-child {
+    grid-column: 2;
+    font-size: var(--fs-note);
+  }
+  strong::before {
+    content: counter(s) ". ";
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .sw {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid var(--ink);
+    align-self: center;
+    grid-row: span 2;
+  }
+  .solid {
+    background: var(--ink);
+  }
+  .light {
+    background: var(--tint);
+  }
+  .outline {
+    border-style: dashed;
+  }
+  .cross,
+  .outline-x {
+    background: linear-gradient(to top right, transparent 45%, var(--ink) 45% 55%, transparent 55%);
+  }
+  .outline-x {
+    border-style: dashed;
+  }
+  .hatch {
+    background: repeating-linear-gradient(135deg, var(--ink) 0 1.2px, transparent 1.2px 5px);
+  }
+</style>

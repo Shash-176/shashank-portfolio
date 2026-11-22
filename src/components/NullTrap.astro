@@ -1,0 +1,272 @@
+---
+/**
+ * PlanProof NULL trap, recorded mode. Every number is from src/data/null-trap.json, captured on
+ * 15 Nov 2026 from PlanProof's own example. Live mode is deferred to v1.1; the live tool is linked.
+ */
+import ExhibitFrame from "./ExhibitFrame.astro";
+import Ev from "./Ev.astro";
+import Glyph from "./Glyph.astro";
+import data from "@/data/null-trap.json";
+import { formatDate } from "@/lib/evidence";
+interface Props {
+  start?: number;
+  fig?: string;
+}
+const { start = 1, fig = "FIG. 1" } = Astro.props;
+const fmt = (n: number) => n.toLocaleString("en-US");
+const split = (sql: string, token: string) => {
+  const i = sql.indexOf(token);
+  return i < 0 ? [sql, "", ""] : [sql.slice(0, i), token, sql.slice(i + token.length)];
+};
+const [o1, o2, o3] = split(data.original, "NOT IN");
+const [r1, r2, r3] = split(data.rewrite, "NOT EXISTS");
+const titles = ["The suggestion", "It looks right", "They agree", "One unknown", "They disagree", "Verdict"];
+---
+
+<ExhibitFrame
+  id="null-trap"
+  fig={fig}
+  title="The NULL trap"
+  claim="“This AI rewrite returns the same rows, and it is faster.”"
+  mode={`Recorded run · captured ${formatDate(data.capturedAt)} · ${data.engine}`}
+  doesNotProve="One counter-example on synthetic data. It says nothing about other rewrites, or about your data."
+  start={start}
+>
+  <ol class="rail" aria-label="Steps">
+    {titles.map((t, i) => (
+      <li>
+        <button type="button" data-goto={i + 1}>
+          {i + 1}
+          <span> {t}</span>
+        </button>
+      </li>
+    ))}
+  </ol>
+  <ol class="steps">
+    <li class="step">
+      <h3>
+        <span class="label">1 / 6</span> An AI assistant suggests a rewrite.
+      </h3>
+      <div class="chat">
+        <p>
+          <span class="label">You</span> {data.prompt}
+        </p>
+        <p>
+          <span class="label">Assistant</span> “{data.suggestion}”
+        </p>
+      </div>
+      <p>The claim: same answer, less time. Most reviewers would accept it.</p>
+    </li>
+    <li class="step">
+      <h3>
+        <span class="label">2 / 6</span> It looks right.
+      </h3>
+      <div class="sql-pair">
+        <div>
+          <p class="label">Original</p>
+          <pre><code>{o1}<mark>{o2}</mark>{o3}</code></pre>
+        </div>
+        <div>
+          <p class="label">AI rewrite</p>
+          <pre><code>{r1}<mark>{r2}</mark>{r3}</code></pre>
+        </div>
+      </div>
+      <p>Both read as “customers with no pending order”.</p>
+    </li>
+    <li class="step">
+      <h3>
+        <span class="label">3 / 6</span> On ordinary data, they agree.
+      </h3>
+      <div class="vs">
+        <div>
+          <p class="label">Original</p>
+          <p class="figure big">{fmt(data.walk.normal.original)}</p>
+        </div>
+        <p class="op" aria-label="equals">
+          =
+        </p>
+        <div>
+          <p class="label">AI rewrite</p>
+          <p class="figure big">{fmt(data.walk.normal.rewrite)}</p>
+        </div>
+      </div>
+      <p class="muted-s">
+        {fmt(data.data.customers)} customers · {fmt(data.data.orders)} orders · {fmt(data.data.pending)} pending. Every
+        order has a customer.
+      </p>
+    </li>
+    <li class="step">
+      <h3>
+        <span class="label">4 / 6</span> Now one order has no customer.
+      </h3>
+      <div class="table-scroll">
+        <table class="row-table">
+          <caption class="label">orders — one new row</caption>
+          <thead>
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">customer_id</th>
+              <th scope="col">status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>200001</td>
+              <td class="null">NULL</td>
+              <td>pending</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        A guest checkout. In SQL that empty value is <code>NULL</code>, which means <strong>unknown</strong>.
+      </p>
+      <button type="button" class="btn js-only-inline" data-ex="advance">
+        Add the order →
+      </button>
+    </li>
+    <li class="step">
+      <h3>
+        <span class="label">5 / 6</span> The two queries stop agreeing.
+      </h3>
+      <div class="vs">
+        <div>
+          <p class="label">Original</p>
+          <p class="figure big">{fmt(data.walk.withNull.original)}</p>
+        </div>
+        <p class="op" aria-label="does not equal">
+          ≠
+        </p>
+        <div>
+          <p class="label">AI rewrite</p>
+          <p class="figure big">{fmt(data.walk.withNull.rewrite)}</p>
+        </div>
+      </div>
+      <p>
+        <Ev id="pp-null-walk">
+          The original cannot rule the unknown customer out, so it names no one. The rewrite skips the unknown and
+          answers anyway.
+        </Ev>
+      </p>
+    </li>
+    <li class="step">
+      <h3>
+        <span class="label">6 / 6</span> PlanProof’s verdict.
+      </h3>
+      <p class="verdict bad">
+        <Glyph state="Unsafe" size={20} /> {data.planproof.verdict}
+      </p>
+      <p>
+        <strong>The rewrite changes the answer. And it was not faster.</strong>
+      </p>
+      <p>
+        <Ev id="pp-null">
+          On PlanProof’s own edge-case data the original returns {data.planproof.edge.original} rows and the rewrite{" "}
+          {data.planproof.edge.rewrite}
+        </Ev>
+        ; on its main data both return {fmt(data.planproof.main.original)}.{" "}
+        <Ev id="pp-speed">
+          Median {data.planproof.medianRewriteMs} ms for the rewrite against {data.planproof.medianOriginalMs} ms:{" "}
+          {data.planproof.ratio}×
+        </Ev>
+        .
+      </p>
+    </li>
+  </ol>
+  <div class="ex-controls exhibit-controls">
+    <button type="button" class="btn" data-ex="back">
+      ← Back
+    </button>
+    <button type="button" class="btn primary" data-ex="next">
+      Next →
+    </button>
+    <button type="button" class="btn" data-ex="replay" hidden>
+      Replay
+    </button>
+    <span class="spacer"></span>
+    <a class="btn" href="https://planproof-two.vercel.app" rel="noopener noreferrer">
+      Run it live in PlanProof ↗
+    </a>
+  </div>
+</ExhibitFrame>
+<style>
+  .chat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+  .chat p {
+    border-left: 3px solid var(--strong);
+    padding: 8px 12px;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+  }
+  .sql-pair {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-3);
+  }
+  @media (min-width: 900px) {
+    .sql-pair {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  pre {
+    font-size: 0.8125rem;
+    background: var(--bg);
+  }
+  mark {
+    background: var(--hl);
+    color: var(--hl-ink);
+    box-shadow: inset 0 -2px 0 var(--hl-line);
+  }
+  .vs {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--s-5);
+    flex-wrap: wrap;
+  }
+  .big {
+    font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+  .op {
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+  .muted-s {
+    color: var(--muted);
+    font-size: var(--fs-note);
+  }
+  .row-table {
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+  .row-table caption {
+    text-align: left;
+    margin-bottom: 4px;
+  }
+  .row-table th,
+  .row-table td {
+    border: var(--hair);
+    padding: 8px 14px;
+    text-align: left;
+  }
+  .row-table th {
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .null {
+    background: repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 6px);
+    font-weight: 600;
+  }
+  .js-only-inline {
+    display: none;
+    align-self: flex-start;
+  }
+  :global(html.js) .js-only-inline {
+    display: inline-flex;
+  }
+</style>

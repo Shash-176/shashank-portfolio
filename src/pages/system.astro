@@ -1,0 +1,171 @@
+---
+import Base from "@/layouts/Base.astro";
+import State from "@/components/State.astro";
+import { STATES } from "@/lib/rules";
+import { CHANGELOG } from "@/data/changelog";
+import { formatDate } from "@/lib/evidence";
+const meaning: Record<string, string> = {
+  Reproduced: "Re-run on the stated date with the stated method.",
+  Tested: "An automated suite exists and passed on the stated date.",
+  Live: "A public address you can open now.",
+  Stated: "My own statement. No linkable artefact.",
+  Verified: "Checked against its source on the stated date.",
+  Unsafe: "The check found a change in results.",
+  Invalid: "The input could not be checked at all.",
+  Unknown: "It could not be established. Drawn hatched, never as a colour.",
+  "Not comparable": "Deliberately not concluded.",
+  Limitation: "A known boundary of the claim.",
+  Private: "Exists, but is not public.",
+  "Research in progress": "Unpublished.",
+};
+---
+
+<Base
+  title="System"
+  description="How this site is built and checked: the evidence method, the twelve evidence states, keyboard shortcuts and the changelog."
+  sheet="System · 5 of 6"
+>
+  <div class="page doc">
+    <h1>System</h1>
+    <p class="lead">How this site is built, and how its claims are kept honest.</p>
+    <section aria-labelledby="ev-h">
+      <h2 id="ev-h">The evidence method</h2>
+      <p>
+        Every factual claim is a record with a state, a date, a method, a source and any limitation. One record drives
+        the numeral in the text, the note in the margin, the evidence tables and the list at the end of each page. A
+        claim may only say <em>Verified</em>, <em>Reproduced</em> or <em>Tested</em> if it has a method, a date and a
+        source; otherwise the build fails. Private projects cannot link a repository. Research cannot show more than its
+        approved disclosure tier.
+      </p>
+    </section>
+    <section aria-labelledby="states-h">
+      <h2 id="states-h">The twelve states</h2>
+      <p class="muted">Shape and word carry the meaning; colour is optional.</p>
+      <dl class="states">
+        {STATES.map((s) => (
+          <div>
+            <dt>
+              <State state={s} size={16} />
+            </dt>
+            <dd>{meaning[s]}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+    <section aria-labelledby="keys-h">
+      <h2 id="keys-h">Keyboard</h2>
+      <ul>
+        <li>
+          <kbd>E</kbd> turns the Evidence Lens on or off, when focus is not in a field.
+        </li>
+        <li>
+          <kbd>Enter</kbd> on a numeral pins its note; <kbd>Esc</kbd> closes it and returns you to the claim.
+        </li>
+        <li>
+          <kbd>←</kbd> and <kbd>→</kbd> move between exhibit steps when the exhibit has focus.
+        </li>
+      </ul>
+    </section>
+    <section aria-labelledby="build-h">
+      <h2 id="build-h">How it is built</h2>
+      <p>
+        Static pages generated with Astro from typed, validated content. No tracking, no cookies, no contact form. The
+        few interactive parts are small scripts that run after the page is readable; with JavaScript off, every claim,
+        diagram and exhibit is still in the page. The avatar is a set of still images; a 3D version may come later.
+      </p>
+    </section>
+    <section id="changelog" aria-labelledby="cl-h">
+      <h2 id="cl-h">Changelog</h2>
+      <ol class="cl">
+        {CHANGELOG.map((c) => (
+          <li>
+            <span class="mono">
+              v{c.version} · {formatDate(c.date)}
+            </span>
+            <span>{c.notes}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  </div>
+</Base>
+<style>
+  .doc {
+    padding-top: var(--s-6);
+    max-width: 860px;
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+  @media (min-width: 1280px) {
+    .doc {
+      margin-left: max(var(--gutter), calc((100vw - var(--page)) / 2));
+    }
+  }
+  h1 {
+    font-size: var(--fs-title);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .lead {
+    font-family: var(--font-display);
+    font-size: var(--fs-claim);
+    margin-top: calc(-1 * var(--s-4));
+  }
+  h2 {
+    font-size: var(--fs-section);
+    margin-bottom: var(--s-3);
+    border-top: var(--frame);
+    padding-top: var(--s-3);
+  }
+  p,
+  li {
+    max-width: 66ch;
+  }
+  ul {
+    padding-left: 1.2em;
+  }
+  li + li {
+    margin-top: 6px;
+  }
+  .muted {
+    color: var(--muted);
+    margin-bottom: var(--s-3);
+  }
+  .states {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: 0;
+  }
+  .states div {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px 16px;
+    padding: 10px 0;
+    border-bottom: var(--hair);
+  }
+  @media (min-width: 768px) {
+    .states div {
+      grid-template-columns: 220px 1fr;
+    }
+  }
+  dd {
+    margin: 0;
+  }
+  kbd {
+    border: var(--hair);
+    padding: 0 6px;
+    background: var(--surface);
+  }
+  .cl {
+    list-style: none;
+    padding: 0;
+  }
+  .cl li {
+    display: grid;
+    gap: 4px;
+    padding: 10px 0;
+    border-bottom: var(--hair);
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import Ev from "../Ev.astro";
+const cells = [
+  ["64", "API routes, each in a generated authorisation matrix", "sa-routes"],
+  ["22", "tables in 5 migrations", "sa-schema"],
+  ["36", "foreign keys; one composite key makes an orphaned event impossible", null],
+  ["27", "CHECK constraints", null],
+  ["3", "partial unique indexes", null],
+  ["41", "indexes", null],
+] as const;
+---
+
+<dl class="ledger">
+  {cells.map(([v, k, ev]) => (
+    <div>
+      <dt class="figure">{v}</dt>
+      <dd>{ev ? <Ev id={ev}>{k}</Ev> : k}</dd>
+    </div>
+  ))}
+</dl>
+<style>
+  .ledger {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    border: var(--frame);
+  }
+  @media (min-width: 768px) {
+    .ledger {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .ledger div {
+    padding: 12px 14px;
+    border-right: var(--hair);
+    border-bottom: var(--hair);
+  }
+  dd {
+    margin: 2px 0 0;
+    font-size: var(--fs-note);
+  }
+</style>

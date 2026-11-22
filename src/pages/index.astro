@@ -1,0 +1,336 @@
+---
+import { getCollection } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import Annotated from "@/components/Annotated.astro";
+import Avatar from "@/components/Avatar.astro";
+import Ev from "@/components/Ev.astro";
+import Glyph from "@/components/Glyph.astro";
+import NullTrap from "@/components/NullTrap.astro";
+import ProjectRow from "@/components/ProjectRow.astro";
+import { SITE } from "@/site";
+
+const projects = (await getCollection("projects"))
+  .filter((p) => p.data.status === "published")
+  .sort((a, b) => a.data.order - b.data.order);
+const proofs = [
+  {
+    ev: "pp-null",
+    claim: "“This AI rewrite is equivalent, and faster.”",
+    how: "Both queries run in PostgreSQL, on data built to break them",
+    state: "Unsafe",
+    verdict: "UNSAFE",
+    tone: "bad",
+  },
+  {
+    ev: "sa-rules",
+    claim: "“No detection means absent.”",
+    how: "Presence engine with an explicit state for time it could not see",
+    state: "Unknown",
+    verdict: "UNKNOWN",
+    tone: "ink",
+  },
+  {
+    ev: "rdp-recon",
+    claim: "“The loaded numbers match the source.”",
+    how: "Recomputed in SQL against the recorded results",
+    state: "Verified",
+    verdict: "MATCHES",
+    tone: "ok",
+  },
+];
+---
+
+<Base title={SITE.name} sheet="Home · 1 of 6">
+  <div class="page">
+    <Annotated as="section" always labelledby="hero-h" class="hero">
+      <p class="eyebrow label">
+        {SITE.role} · {SITE.place}
+      </p>
+      <h1 id="hero-h">
+        {SITE.headline.lead} <span class="hl">{SITE.headline.highlight}</span>
+      </h1>
+      <p class="support">{SITE.supporting}</p>
+      <div class="proofs" data-hero-claims>
+        <p class="label proofs-head" aria-hidden="true">
+          <span>No.</span>
+          <span>Claim</span>
+          <span>How it was checked</span>
+          <span>Verdict</span>
+        </p>
+        <ol>
+          {proofs.map((p, i) => (
+            <li>
+              <span class="no label" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span class="c">
+                <Ev id={p.ev}>{p.claim}</Ev>
+              </span>
+              <span class="how">{p.how}</span>
+              <span class={`v tone-${p.tone}`}>
+                <Glyph state={p.state} size={16} /> <span class="sr-only">Verdict: </span>
+                {p.verdict}
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p class="run">
+          <a class="btn" href="#null-trap">
+            Watch the first one fail ↓
+          </a>
+        </p>
+      </div>
+      <Avatar
+        slot="margin-top"
+        size={220}
+        caption="FIG. 0 — The site’s mark: a neutral base model, not yet a likeness."
+      />
+    </Annotated>
+
+    <dl class="facts">
+      <div>
+        <dt>Degree</dt>
+        <dd>MCA, K. J. Somaiya Institute of Management</dd>
+      </div>
+      <div>
+        <dt>Graduating</dt>
+        <dd>2027 · Mumbai</dd>
+      </div>
+      <div>
+        <dt>Works in</dt>
+        <dd>PostgreSQL · Python · TypeScript</dd>
+      </div>
+      <div>
+        <dt>Research</dt>
+        <dd>
+          <a href="/research">In progress · not published</a>
+        </dd>
+      </div>
+    </dl>
+
+    <Annotated as="section" labelledby="null-trap-title" class="exhibit-wrap">
+      <NullTrap start={5} />
+    </Annotated>
+
+    <section class="work" aria-labelledby="work-h">
+      <h2 id="work-h" class="label">
+        Selected work
+      </h2>
+      <ol class="rows">
+        {projects.map((p, i) => (
+          <ProjectRow project={p} index={i + 1} />
+        ))}
+      </ol>
+      <p class="all">
+        <a href="/work">All work, with what each one proves →</a>
+      </p>
+    </section>
+
+    <section class="principles" aria-labelledby="how-h">
+      <h2 id="how-h" class="label">
+        How I work
+      </h2>
+      <div class="three">
+        <div>
+          <h3>A claim is not a result.</h3>
+          <p>If something says it is faster, I want to watch it run, on data built to break it.</p>
+        </div>
+        <div>
+          <h3>Unknown is an answer.</h3>
+          <p>I would sooner ship “cannot tell” than a neat guess.</p>
+        </div>
+        <div>
+          <h3>AI proposes. Checks decide.</h3>
+          <p>I build with AI tools and treat their output as untrusted input.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+<style>
+  :global(.hero) {
+    padding: var(--s-6) 0 var(--s-6);
+  }
+  @media (max-width: 1099.98px) {
+    :global(.hero .avatar) {
+      --av: 128px !important;
+      width: min(100%, 240px);
+      margin-top: var(--s-5);
+    }
+  }
+  @media (min-width: 1100px) {
+    :global(.hero) {
+      padding-top: var(--s-7);
+    }
+  }
+  .eyebrow {
+    margin-bottom: var(--s-4);
+  }
+  h1 {
+    font-size: var(--fs-hero);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    max-width: 15ch;
+  }
+  .hl {
+    background: var(--head-bg);
+    color: var(--head-ink);
+    padding: 0 0.1em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .support {
+    margin-top: var(--s-5);
+    max-width: 58ch;
+    font-size: 1.0625rem;
+  }
+  .proofs {
+    margin-top: var(--s-6);
+  }
+  .proofs ol {
+    list-style: none;
+    padding: 0;
+    border-top: var(--bold-line);
+  }
+  .proofs-head {
+    display: none;
+  }
+  .proofs li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px var(--s-3);
+    padding: 14px 0;
+    border-bottom: var(--hair);
+    align-items: baseline;
+  }
+  .no {
+    display: none;
+  }
+  .c {
+    grid-column: 1 / -1;
+    font-size: 1.0625rem;
+  }
+  .how {
+    color: var(--muted);
+    font-size: var(--fs-note);
+  }
+  .v {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    justify-self: end;
+  }
+  .tone-bad {
+    color: var(--bad);
+  }
+  .tone-ok {
+    color: var(--ok);
+  }
+  .run {
+    margin-top: var(--s-4);
+  }
+  @media (min-width: 768px) {
+    .proofs-head {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1.25fr) minmax(0, 1fr) 110px;
+      gap: var(--s-4);
+      padding-bottom: 6px;
+    }
+    .proofs li {
+      grid-template-columns: 36px minmax(0, 1.25fr) minmax(0, 1fr) 110px;
+      gap: var(--s-4);
+    }
+    .no {
+      display: block;
+    }
+    .c {
+      grid-column: auto;
+    }
+    .v {
+      justify-self: start;
+    }
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    border-top: var(--frame);
+    border-bottom: var(--frame);
+    font-size: 0.9375rem;
+  }
+  .facts div {
+    padding: 12px 14px 12px 0;
+  }
+  .facts div:nth-child(n + 3) {
+    border-top: var(--hair);
+  }
+  dt {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    color: var(--muted);
+  }
+  dd {
+    margin: 2px 0 0;
+  }
+  @media (min-width: 1100px) {
+    .facts {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .facts div {
+      padding: 14px 16px;
+      border-left: var(--hair);
+    }
+    .facts div:first-child {
+      border-left: 0;
+      padding-left: 0;
+    }
+    .facts div:nth-child(n + 3) {
+      border-top: 0;
+    }
+  }
+  :global(.exhibit-wrap) {
+    margin-top: var(--s-8);
+  }
+  .work {
+    margin-top: var(--s-8);
+  }
+  .work h2,
+  .principles h2 {
+    margin-bottom: var(--s-3);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: var(--fs-label);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .rows {
+    list-style: none;
+    padding: 0;
+    border-top: var(--bold-line);
+  }
+  .all {
+    margin-top: var(--s-4);
+  }
+  .principles {
+    margin-top: var(--s-8);
+  }
+  .three {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+    border-top: var(--frame);
+    padding-top: var(--s-4);
+  }
+  @media (min-width: 768px) {
+    .three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  h3 {
+    font-size: 1.25rem;
+    margin-bottom: 6px;
+  }
+</style>

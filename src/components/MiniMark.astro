@@ -1,0 +1,53 @@
+---
+// Miniature exploded mark for a project row.
+interface Props {
+  mark: { layers: number; selected: number } | { nodes: true };
+  size?: number;
+}
+const { mark, size = 40 } = Astro.props;
+const layers =
+  "layers" in mark
+    ? Array.from({ length: mark.layers }, (_, i) => ({
+        y: 7 + (i * 26) / Math.max(mark.layers - 1, 1),
+        sel: i === mark.selected,
+      }))
+    : [];
+---
+
+<svg
+  class="mini"
+  aria-hidden="true"
+  width={size}
+  height={size}
+  viewBox="0 0 40 40"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.4"
+  stroke-linejoin="round"
+>
+  {"nodes" in mark ? (
+    <>
+      <circle cx="8" cy="12" r="4" />
+      <circle cx="32" cy="12" r="4" />
+      <circle cx="20" cy="22" r="5" class="sel" />
+      <circle cx="8" cy="32" r="4" />
+      <circle cx="32" cy="32" r="4" />
+      <path d="M11 14l5 5M29 14l-5 5M11 30l5-5M29 30l-5-5" />
+    </>
+  ) : (
+    layers.map((l) => (
+      <polygon points={`4,${l.y} 20,${l.y - 5} 36,${l.y} 20,${l.y + 5}`} class={l.sel ? "sel" : "plate"} />
+    ))
+  )}
+</svg>
+<style>
+  .mini {
+    flex: none;
+  }
+  .plate {
+    fill: var(--bg);
+  }
+  .sel {
+    fill: var(--chip);
+  }
+</style>

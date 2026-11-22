@@ -1,0 +1,49 @@
+---
+import Base from "@/layouts/Base.astro";
+import Text from "@/components/Text.astro";
+import { SITE } from "@/site";
+import { hasPlaceholder } from "@/lib/rules";
+const ready = !hasPlaceholder(SITE.resume.url);
+---
+
+<Base title="Résumé" sheet="Résumé" description="Shashank Maheshwar's résumé (PDF).">
+  <div class="page">
+    <h1>Résumé</h1>
+    {ready ? (
+      <p>
+        <a class="btn primary" href={SITE.resume.url}>
+          Download the résumé (PDF, {SITE.resume.size}, updated {SITE.resume.updated})
+        </a>
+      </p>
+    ) : (
+      <p class="ph">
+        The PDF is not published yet: <Text value={SITE.resume.url} />.
+      </p>
+    )}
+    <p class="muted">
+      The site is not the résumé. Every claim on the site links to its evidence; the résumé carries the same facts in
+      one page.
+    </p>
+  </div>
+</Base>
+<style>
+  .page {
+    padding-top: var(--s-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  h1 {
+    font-size: var(--fs-title);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .muted {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+  .ph {
+    padding: 14px 16px;
+    border: 1px dashed var(--strong);
+  }
+</style>

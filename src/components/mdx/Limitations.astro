@@ -1,0 +1,10 @@
+---
+const p = Astro.locals.project;
+if (!p) throw new Error("<Limitations /> used outside a case study");
+---
+
+<ul>
+  {p.data.limitations.map((l) => (
+    <li>{l}</li>
+  ))}
+</ul>

@@ -1,0 +1,271 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import Annotated from "@/components/Annotated.astro";
+import Brief from "@/components/Brief.astro";
+import Strip from "@/components/Strip.astro";
+import Section from "@/components/Section.astro";
+import Ev from "@/components/Ev.astro";
+import Diagram from "@/components/Diagram.astro";
+import NullTrap from "@/components/NullTrap.astro";
+import PresenceTimeline from "@/components/PresenceTimeline.astro";
+import EvidenceTable from "@/components/EvidenceTable.astro";
+import Timeline from "@/components/Timeline.astro";
+import Placeholder from "@/components/mdx/Placeholder.astro";
+import Limitations from "@/components/mdx/Limitations.astro";
+import Links from "@/components/mdx/Links.astro";
+import PresenceStates from "@/components/mdx/PresenceStates.astro";
+import SchemaLedger from "@/components/mdx/SchemaLedger.astro";
+import TwoPanels from "@/components/mdx/TwoPanels.astro";
+import { SITE } from "@/site";
+
+export async function getStaticPaths() {
+  const projects = (await getCollection("projects")).filter((p) => p.data.status === "published");
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+const { project } = Astro.props;
+const d = project.data;
+Astro.locals.project = project;
+const { Content } = await render(project);
+const components = {
+  Section,
+  Ev,
+  Diagram,
+  NullTrap,
+  PresenceTimeline,
+  EvidenceTable,
+  Timeline,
+  Placeholder,
+  Limitations,
+  Links,
+  PresenceStates,
+  SchemaLedger,
+  TwoPanels,
+};
+const sections = [...(project.body ?? "").matchAll(/<Section title="([^"]+)"/g)].map((m) => m[1]);
+const slug = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+const full = d.depth === "full";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  name: d.name,
+  description: d.description,
+  author: { "@type": "Person", name: SITE.name },
+  ...(d.repository ? { codeRepository: d.repository } : {}),
+  ...(d.live ? { url: d.live } : {}),
+};
+---
+
+<Base
+  title={d.name}
+  description={d.description}
+  sheet={`${d.name} · ${full ? "full" : "short"} case study`}
+  active="work"
+  og={`/og/${project.id}.png`}
+  jsonLd={jsonLd}
+>
+  <div class="page">
+    <header class="cs-head">
+      <p class="label">
+        <a href="/work">Work</a> / {String(d.order).padStart(2, "0")} / {full ? "Full case study" : "Short case study"}
+      </p>
+      <h1>{d.name}</h1>
+      <p class="claim">{d.claim}</p>
+      <Strip ids={d.strip.map((s) => s.id)} extra={d.access === "private" ? "Private source" : undefined} />
+      <div class="links">
+        {d.live && (
+          <a class="btn primary" href={d.live} rel="noopener noreferrer">
+            Open {d.name} ↗
+          </a>
+        )}
+        {d.repository && (
+          <a class="btn" href={d.repository} rel="noopener noreferrer">
+            Repository ↗
+          </a>
+        )}
+        {d.exhibit && (
+          <a class="btn" href={d.exhibit === "null-trap" ? "#the-null-trap" : "#unknown-is-not-absent"}>
+            {d.exhibit === "null-trap" ? "Run the NULL trap ↓" : "Try the presence timeline ↓"}
+          </a>
+        )}
+      </div>
+    </header>
+    {full && (
+      <details class="toc-m">
+        <summary>On this page · {sections.length + 1} sections</summary>
+        <ol>
+          <li>
+            <a href="#brief">Brief</a>
+          </li>
+          {sections.map((s) => (
+            <li>
+              <a href={`#${slug(s)}`}>{s}</a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    )}
+    <div class:list={["cs-grid", { full }]}>
+      {full && (
+        <nav class="rail" aria-label="On this page">
+          <div class="rail-inner">
+            <p class="label">On this page</p>
+            <ol>
+              <li>
+                <a href="#brief">Brief</a>
+              </li>
+              {sections.map((s) => (
+                <li>
+                  <a href={`#${slug(s)}`}>{s}</a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </nav>
+      )}
+      <div class="cs-main">
+        <Annotated id="brief" labelledby="brief-h" class="cs-section">
+          <h2 id="brief-h">Brief</h2>
+          <Brief brief={d.brief} evidence={d.briefEvidence.id} />
+        </Annotated>
+        <Content components={components} />
+      </div>
+    </div>
+  </div>
+</Base>
+<style>
+  .cs-head {
+    padding: var(--s-6) 0 var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  h1 {
+    font-size: var(--fs-title);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .claim {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-claim);
+    line-height: 1.15;
+    max-width: 34ch;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .toc-m {
+    border: var(--frame);
+    background: var(--surface);
+    margin-bottom: var(--s-2);
+  }
+  .toc-m summary::after {
+    content: "▾";
+    margin-left: auto;
+  }
+  .toc-m[open] summary::after {
+    content: "▴";
+  }
+  .toc-m summary {
+    list-style: none;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    cursor: pointer;
+    font-size: 0.9375rem;
+  }
+  .toc-m ol {
+    margin: 0;
+    padding: 0 14px 12px 36px;
+  }
+  .toc-m li {
+    padding: 6px 0;
+  }
+  @media (min-width: 1100px) {
+    .toc-m {
+      display: none;
+    }
+  }
+  .cs-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rail {
+    display: none;
+  }
+  @media (min-width: 1100px) {
+    .cs-grid.full {
+      grid-template-columns: var(--rail) minmax(0, 1fr);
+      column-gap: 36px;
+    }
+    .rail {
+      display: block;
+      font-size: 0.875rem;
+    }
+    .rail-inner {
+      position: sticky;
+      top: var(--s-4);
+      padding-top: var(--s-6);
+    }
+    .rail ol {
+      list-style: none;
+      padding: 0;
+      margin-top: var(--s-2);
+      counter-reset: r;
+    }
+    .rail li {
+      counter-increment: r;
+    }
+    .rail a {
+      display: block;
+      padding: 5px 0 5px 10px;
+      border-left: 3px solid transparent;
+      text-decoration: none;
+      color: var(--muted);
+    }
+    .rail a::before {
+      content: counter(r, decimal-leading-zero) " ";
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+    .rail a:hover,
+    .rail a[aria-current="true"] {
+      color: var(--ink);
+      border-left-color: var(--chip);
+    }
+  }
+</style>
+<script>
+  // Marks the section in view in the contents rail.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>(".rail a")];
+  if (links.length && "IntersectionObserver" in window) {
+    const byId = new Map(links.map((a) => [a.hash.slice(1), a]));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          links.forEach((a) => a.removeAttribute("aria-current"));
+          byId.get(e.target.id)?.setAttribute("aria-current", "true");
+        });
+      },
+      { rootMargin: "-20% 0px -70% 0px" },
+    );
+    byId.forEach((_, id) => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+  }
+</script>

@@ -1,0 +1,30 @@
+---
+const p = Astro.locals.project;
+if (!p) throw new Error("<Links /> used outside a case study");
+const { live, repository } = p.data;
+---
+
+<div class="links">
+  {live && (
+    <a class="btn primary" href={live} rel="noopener noreferrer">
+      Open {p.data.name} ↗
+    </a>
+  )}
+  {repository && (
+    <a class="btn" href={repository} rel="noopener noreferrer">
+      Repository ↗
+    </a>
+  )}
+  {repository && (
+    <a class="btn" href={`${repository}/blob/main/CHANGELOG.md`} rel="noopener noreferrer">
+      Changelog ↗
+    </a>
+  )}
+</div>
+<style>
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>

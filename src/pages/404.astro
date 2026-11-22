@@ -1,0 +1,59 @@
+---
+import Base from "@/layouts/Base.astro";
+import Avatar from "@/components/Avatar.astro";
+import Glyph from "@/components/Glyph.astro";
+---
+
+<Base title="Page not found" sheet="404" noindex>
+  <div class="page lost">
+    <div>
+      <p class="verdict-line">
+        <Glyph state="Unknown" size={18} /> UNKNOWN
+      </p>
+      <h1>This page could not be found.</h1>
+      <p>It may have moved, or the address may be mistyped. Nothing here is counted as an error on your part.</p>
+      <p class="actions">
+        <a class="btn primary" href="/">
+          Home
+        </a>
+        <a class="btn" href="/work">
+          Work
+        </a>
+      </p>
+    </div>
+    <Avatar state="unknown" size={220} />
+  </div>
+</Base>
+<style>
+  .lost {
+    padding-top: var(--s-7);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+    align-items: end;
+  }
+  @media (min-width: 768px) {
+    .lost {
+      grid-template-columns: 1fr 260px;
+    }
+  }
+  .verdict-line {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  h1 {
+    font-size: var(--fs-title);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: var(--s-3) 0;
+    max-width: 14ch;
+  }
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: var(--s-4);
+  }
+</style>

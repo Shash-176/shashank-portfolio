@@ -1,0 +1,49 @@
+---
+interface Props {
+  events: { tag: string; title: string; body: string; outcome: "bad" | "ok" | "neutral" }[];
+}
+const { events } = Astro.props;
+---
+
+<ol class="timeline">
+  {events.map((e) => (
+    <li class={e.outcome}>
+      <span class="dot" aria-hidden="true"></span>
+      <p class="label">
+        {e.tag}
+        {e.outcome === "bad" ? " · did not fix it" : e.outcome === "ok" ? " · shipped" : ""}
+      </p>
+      <p class="t">{e.title}</p>
+      <p>{e.body}</p>
+    </li>
+  ))}
+</ol>
+<style>
+  .timeline {
+    list-style: none;
+    padding: 0 !important;
+    border-left: 2px solid var(--strong);
+  }
+  li {
+    position: relative;
+    padding: 0 0 22px 22px;
+  }
+  .dot {
+    position: absolute;
+    left: -7px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    background: var(--bg);
+    border: 2px solid var(--ink);
+  }
+  .bad .dot {
+    background: var(--bad);
+  }
+  .ok .dot {
+    background: var(--ok);
+  }
+  .t {
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,159 @@
+---
+import { getCollection } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import State from "@/components/State.astro";
+import Text from "@/components/Text.astro";
+const entries = await getCollection("research");
+const track = ["in-progress", "preprint", "peer-reviewed", "published"] as const;
+const words: Record<string, string> = {
+  "in-progress": "In progress",
+  preprint: "Preprint",
+  "peer-reviewed": "Peer reviewed",
+  published: "Published",
+};
+---
+
+<Base
+  title="Research"
+  description="Research by Shashank Maheshwar. Status, problem and a one-sentence method; results stay private until publication."
+  sheet="Research · 4 of 6"
+  active="research"
+>
+  <div class="page">
+    <header class="head">
+      <h1>Research</h1>
+      <p class="label">{entries.length} study · updated when its status changes</p>
+    </header>
+    {entries.map((r) => {
+      const at = track.indexOf(r.data.status);
+      return (
+        <article class="entry" aria-labelledby={`r-${r.id}`}>
+          <h2 id={`r-${r.id}`}>{r.data.title}</h2>
+          <ol class="track" aria-label="Publication status">
+            {track.map((t, i) => (
+              <li aria-current={i === at ? "step" : undefined} class:list={{ now: i === at }}>
+                {i === at ? <State state="Research in progress" word={words[t]} size={13} /> : words[t]}
+              </li>
+            ))}
+          </ol>
+          <p class="label">
+            {r.data.status === "in-progress" ? "Not published · not peer-reviewed" : words[r.data.status]}
+          </p>
+          {r.data.problem && (
+            <div>
+              <p class="label">The problem</p>
+              <p class="lead">
+                <Text value={r.data.problem} />
+              </p>
+            </div>
+          )}
+          {r.data.method && (
+            <div>
+              <p class="label">The method, in one sentence</p>
+              <p>{r.data.method}</p>
+            </div>
+          )}
+          {r.data.related && (
+            <div>
+              <p class="label">What you can see now</p>
+              <a class="card" href={`/work/${r.data.related.id}`}>
+                <span>
+                  <strong>Research Data Platform</strong>, the engineering that keeps the study’s numbers honest
+                  <br />
+                  <span class="muted">Provenance, idempotent ingestion, reconciliation. No result values.</span>
+                </span>
+                <span>Short study →</span>
+              </a>
+            </div>
+          )}
+          <div class="held">
+            <p class="label">Not shown yet, and why</p>
+            <p>{r.data.notShown}</p>
+          </div>
+        </article>
+      );
+    })}
+    <p class="later muted">
+      When more research arrives, each study becomes an entry with the same anatomy: title, status track, problem,
+      method, what is shown and what is held.
+    </p>
+  </div>
+</Base>
+<style>
+  .head {
+    padding: var(--s-6) 0 var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+  h1 {
+    font-size: var(--fs-title);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .entry {
+    border-top: var(--bold-line);
+    padding-top: var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+    max-width: 820px;
+  }
+  h2 {
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+    letter-spacing: -0.02em;
+  }
+  .track {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border: var(--frame);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+  }
+  @media (min-width: 768px) {
+    .track {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .track li {
+    padding: 10px 12px;
+    border-right: var(--hair);
+    color: var(--muted);
+  }
+  .track li.now {
+    background: var(--ink);
+    color: var(--bg);
+    font-weight: 600;
+  }
+  .lead {
+    font-size: 1.1875rem;
+    max-width: 62ch;
+  }
+  .card {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 8px;
+    padding: 14px 16px;
+    border: var(--frame);
+    background: var(--surface);
+    text-decoration: none;
+  }
+  .card:hover strong {
+    text-decoration: underline;
+  }
+  .muted {
+    color: var(--muted);
+    font-size: var(--fs-note);
+  }
+  .held {
+    padding: 16px 18px;
+    border: 1.5px dashed var(--strong);
+  }
+  .later {
+    margin-top: var(--s-6);
+    max-width: 62ch;
+  }
+</style>

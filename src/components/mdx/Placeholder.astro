@@ -1,0 +1,23 @@
+---
+// Text only Shashank can write. Renders visibly and blocks a release build.
+import Text from "../Text.astro";
+interface Props {
+  label: string;
+  inline?: boolean;
+}
+const { label, inline = false } = Astro.props;
+---
+
+{inline ? (
+  <Text value={`[[todo: ${label}]]`} />
+) : (
+  <p class="ph">
+    <Text value={`[[todo: ${label}]]`} />
+  </p>
+)}
+<style>
+  .ph {
+    padding: 14px 16px;
+    border: 1px dashed var(--strong);
+  }
+</style>
