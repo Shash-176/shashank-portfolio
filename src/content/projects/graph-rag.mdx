@@ -1,0 +1,58 @@
+---
+name: Graph-Augmented RAG
+order: 3
+depth: short
+access: private
+claim: Code retrieval that follows imports, not just wording.
+description: "Graph-augmented retrieval over a Python codebase: a dependency graph from the syntax tree added to vector search, with a published regression and its fix."
+row:
+  idea: Code retrieval that follows imports, not just wording.
+  evidence: [rag-eval, rag-central]
+  note: local
+brief:
+  problem: Similarity search misses “what depends on X?”
+  idea: Add a dependency graph built from the syntax tree.
+  evidence: Precision at 5 from 0.27 to 0.35 at an equal budget.
+  limit: A small, self-made evaluation; n = 3 on centrality.
+briefEvidence: rag-eval
+strip: [rag-eval, rag-checks]
+diagram: graph-rag
+mark: { nodes: true }
+limitations:
+  - A small evaluation set written for the project.
+  - For dependency questions, the gold labels and the graph share a source.
+  - No measure of answer quality.
+  - Not deployed.
+---
+
+<Section title="The regression, and the fix">
+
+Adding graph neighbours made one kind of question worse: “which file is the hub?” Neighbour chunks crowded the ranking, and being a hub is not written in any chunk’s text. <Ev id="rag-central">A bonus for in-degree, switched on only for centrality questions, fixed it</Ev>: Recall at 5 went from 0.000 to 1.000 on those questions.
+
+Read that as a fixed bug, not a measured gain: there are three such questions, and the routing keywords match their wording.
+
+</Section>
+
+<Section title="Overall">
+
+| Equal retrieval budget | Vector only | With graph |
+| --- | --- | --- |
+| Precision at 5 | 0.269 | 0.354 |
+| Recall at 10 | 0.800 | 0.877 |
+| MRR | 0.595 | 0.710 |
+
+<Ev id="rag-eval">26 questions over a 19-file demo corpus written for the project.</Ev> <Ev id="rag-checks">Scripted checks run first.</Ev>
+
+</Section>
+
+<Section title="Architecture">
+
+<Diagram id="graph-rag" compact />
+
+</Section>
+
+<Section title="Limitations" locked>
+
+<Limitations />
+
+</Section>

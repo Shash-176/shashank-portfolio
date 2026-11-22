@@ -1,0 +1,44 @@
+[
+  {
+    "id": "postgres",
+    "name": "PostgreSQL and SQL",
+    "description": "Query plans, constraints, transactions",
+    "substantial": ["planproof", "smart-attendance", "research-data-platform"],
+    "supporting": []
+  },
+  {
+    "id": "python",
+    "name": "Python",
+    "description": "Services, pipelines, tests",
+    "substantial": ["smart-attendance", "graph-rag", "research-data-platform"],
+    "supporting": []
+  },
+  {
+    "id": "apis",
+    "name": "APIs, auth and concurrency",
+    "description": "FastAPI, sessions, idempotency, locking",
+    "substantial": ["smart-attendance"],
+    "supporting": []
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript and React",
+    "description": "Browser apps and workers",
+    "substantial": ["planproof"],
+    "supporting": ["smart-attendance"]
+  },
+  {
+    "id": "testing",
+    "name": "Testing and evaluation",
+    "description": "Suites, differential tests, reproducible evaluations",
+    "substantial": ["planproof", "smart-attendance", "graph-rag", "research-data-platform"],
+    "supporting": []
+  },
+  {
+    "id": "retrieval",
+    "name": "Retrieval and LLM integration",
+    "description": "Graph retrieval; model output treated as untrusted input",
+    "substantial": ["graph-rag"],
+    "supporting": ["planproof", "smart-attendance"]
+  }
+]

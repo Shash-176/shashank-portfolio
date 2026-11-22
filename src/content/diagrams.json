@@ -1,0 +1,148 @@
+[
+  {
+    "id": "planproof",
+    "title": "PlanProof in four layers",
+    "selected": 2,
+    "layers": [
+      {
+        "name": "Page",
+        "purpose": "Paste a query and a suggestion",
+        "modules": ["query", "suggestion"],
+        "detail": "One server route proxies the optional AI call. Nothing else leaves the browser."
+      },
+      {
+        "name": "Guard",
+        "purpose": "One read-only SELECT; model output is untrusted",
+        "modules": ["parse", "classify"],
+        "detail": "Pasted SQL and model output pass the same check."
+      },
+      {
+        "name": "Worker + PostgreSQL",
+        "purpose": "Main, edge-case and empty datasets",
+        "modules": ["main", "edge", "empty"],
+        "detail": "PostgreSQL compiled to WebAssembly runs in a worker. Index trials are always rolled back."
+      },
+      {
+        "name": "Verdict rule",
+        "purpose": "Structure, then results, then timing",
+        "modules": ["plan", "rows", "time"],
+        "detail": "A multiset comparison of results, then timing with a 1.5× threshold confirmed by cost or rows read."
+      }
+    ]
+  },
+  {
+    "id": "smart-attendance",
+    "title": "Smart Attendance in five layers",
+    "selected": 3,
+    "boundary": {
+      "after": 1,
+      "rule": "Privacy boundary: images and embeddings never cross"
+    },
+    "layers": [
+      {
+        "name": "Clients",
+        "purpose": "Web app, kiosk QR, camera worker",
+        "modules": ["web", "kiosk", "worker"],
+        "detail": "Three ways to check in, each able to fail silently."
+      },
+      {
+        "name": "Worker on the device",
+        "purpose": "Recognition runs locally; requests are signed",
+        "modules": ["capture", "match", "sign"],
+        "detail": "Face matching happens on the device. Only signed attendance events leave it."
+      },
+      {
+        "name": "API",
+        "purpose": "64 routes; session cookie and CSRF; route matrix",
+        "modules": ["auth", "events", "reports"],
+        "detail": "Every route is listed in a generated authorisation matrix."
+      },
+      {
+        "name": "Presence engine",
+        "purpose": "Integer-millisecond intervals, six states",
+        "modules": ["merge", "classify"],
+        "detail": "Every millisecond of a session gets exactly one state."
+      },
+      {
+        "name": "PostgreSQL",
+        "purpose": "22 tables, 36 foreign keys, 27 CHECKs",
+        "modules": ["events", "keys", "sessions"],
+        "detail": "Idempotency keys and row locks taken in a fixed order."
+      }
+    ]
+  },
+  {
+    "id": "graph-rag",
+    "title": "Graph-augmented retrieval in five layers",
+    "selected": 4,
+    "layers": [
+      {
+        "name": "Parse",
+        "purpose": "Python syntax tree",
+        "modules": ["files", "functions", "classes"],
+        "detail": "Source files parsed with Python's ast module."
+      },
+      {
+        "name": "Graph",
+        "purpose": "Imports and calls",
+        "modules": ["nodes", "edges"],
+        "detail": "A dependency graph built with networkx."
+      },
+      {
+        "name": "Chunks",
+        "purpose": "Cut on syntax boundaries",
+        "modules": ["chunk"],
+        "detail": "Functions and classes stay whole."
+      },
+      {
+        "name": "Vectors",
+        "purpose": "MiniLM embeddings in ChromaDB",
+        "modules": ["embed"],
+        "detail": "all-MiniLM-L6-v2 sentence embeddings."
+      },
+      {
+        "name": "Retrieve",
+        "purpose": "Vector hits, graph expansion, rerank",
+        "modules": ["hits", "expand", "rank"],
+        "detail": "Neighbours are added, then reranked; centrality questions get an in-degree bonus."
+      }
+    ]
+  },
+  {
+    "id": "research-data-platform",
+    "title": "Research data platform in five layers",
+    "selected": 4,
+    "layers": [
+      {
+        "name": "Raw",
+        "purpose": "Immutable; one version per name and SHA-256",
+        "modules": ["file", "hash"],
+        "detail": "A file already seen is never stored twice."
+      },
+      {
+        "name": "Quality gates",
+        "purpose": "Fail the load before core is written",
+        "modules": ["gate"],
+        "detail": "Bad input stops the run instead of reaching analysis."
+      },
+      {
+        "name": "Core",
+        "purpose": "Normalised and provenance-keyed",
+        "modules": ["class 1", "class 2", "class 3"],
+        "detail": "Three provenance classes kept apart by key and constraint."
+      },
+      {
+        "name": "Analytics",
+        "purpose": "Views and a materialised view",
+        "modules": ["view"],
+        "detail": "What analysis reads."
+      },
+      {
+        "name": "Reconciliation",
+        "purpose": "Recomputed equals recorded",
+        "modules": ["exact", "tolerance", "n/c"],
+        "detail": "The load is not finished until these pass."
+      }
+    ]
+  }
+]

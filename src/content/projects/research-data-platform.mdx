@@ -1,0 +1,61 @@
+---
+name: Research Data Platform
+order: 4
+depth: short
+access: private
+claim: Results that reconcile with their source, or the load fails.
+description: "A PostgreSQL research data platform: provenance on every row, idempotent ingestion, and reconciliation as the exit condition. Study results are not shown."
+row:
+  idea: Results that reconcile with their source, or the load fails.
+  evidence: [rdp-recon, rdp-idem]
+  note: research data withheld
+brief:
+  problem: A study’s numbers pass through many hands.
+  idea: Model the study in PostgreSQL and make reconciliation the exit condition.
+  evidence: 16 of 16 checks pass; a second run loads nothing new.
+  limit: 28 checks need private data and were not run here.
+briefEvidence: rdp-recon
+strip: [rdp-recon, rdp-idem, rdp-tests]
+diagram: research-data-platform
+mark: { layers: 5, selected: 4 }
+limitations:
+  - It proves the database agrees with recorded outputs, not that the science is right.
+  - 28 measured-path checks need the study's data and were not run here.
+  - Private, because it contains unpublished material.
+---
+
+<Section title="Provenance">
+
+Every row carries where it came from. Three provenance classes are kept apart by key and constraint, so a transcribed value can never be mistaken for a measured one.
+
+</Section>
+
+<Section title="Idempotent ingestion">
+
+<Ev id="rdp-idem">Each file is stored once, under its name and SHA-256.</Ev> Running the pipeline again over the same files: 14 seen, 0 landed.
+
+</Section>
+
+<Section title="Reconciliation is the exit condition">
+
+The load is not finished until SQL recomputation equals the recorded results. Each check is labelled before it runs: exact, within tolerance, or not comparable. <Ev id="rdp-recon">16 of 16 checks pass on the reproducible path.</Ev> <Ev id="rdp-tests">The platform has its own test suite.</Ev>
+
+</Section>
+
+<Section title="Architecture">
+
+<Diagram id="research-data-platform" compact />
+
+</Section>
+
+<Section title="What this page does not show">
+
+The platform serves an unpublished study. Result values, manuscript tables and study design beyond one sentence stay private until publication. See [Research](/research).
+
+</Section>
+
+<Section title="Limitations" locked>
+
+<Limitations />
+
+</Section>

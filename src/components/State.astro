@@ -1,0 +1,39 @@
+---
+import Glyph from "./Glyph.astro";
+import { stateTone } from "@/lib/evidence";
+interface Props {
+  state: string;
+  word?: string;
+  size?: number;
+  upper?: boolean;
+}
+const { state, word, size = 14, upper = false } = Astro.props;
+const text = word ?? state;
+---
+
+<span class={`state tone-${stateTone(state)}`}>
+  <Glyph state={state} size={size} />
+  <span>{upper ? text.toUpperCase() : text}</span>
+</span>
+<style>
+  .state {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    line-height: 1.35;
+  }
+  .state :global(.glyph) {
+    align-self: center;
+  }
+  .tone-ok {
+    color: var(--ok);
+  }
+  .tone-bad {
+    color: var(--bad);
+  }
+  .tone-warn {
+    color: var(--warn);
+  }
+</style>

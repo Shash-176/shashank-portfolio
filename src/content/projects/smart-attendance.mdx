@@ -1,0 +1,106 @@
+---
+name: Smart Attendance
+order: 2
+depth: full
+access: private
+claim: Time it could not observe is recorded as unknown, never as absence.
+description: "Smart Attendance: three check-in methods feed one presence engine with an explicit state for time it could not observe. FastAPI, PostgreSQL, a signed device worker."
+row:
+  idea: Three check-in methods feed one engine that records time it could not observe as unknown, never as absence.
+  evidence: [sa-tests, sa-schema]
+  note: with a collaborator
+brief:
+  problem: Attendance systems turn “we could not see” into “absent”.
+  idea: Three check-in methods feed one engine with an explicit state for unknown time.
+  evidence: 1,410 of 1,427 backend tests passed; the engine is tested against a naive model.
+  limit: Not deployed. Recognition accuracy has not been measured.
+briefEvidence: sa-tests
+strip: [sa-tests, sa-schema, sa-routes]
+diagram: smart-attendance
+exhibit: presence-timeline
+mark: { layers: 5, selected: 3 }
+limitations:
+  - No liveness detection.
+  - No measured recognition accuracy.
+  - Hardware validated with one consenting participant.
+  - Rate limits are per process.
+  - Not deployed; the source is private.
+---
+
+<Section title="System problem">
+
+A session has people, rooms and time. Check-ins arrive from a web app, a rotating QR code at a kiosk and a face-recognition worker. Any of them can fail silently. If silence is recorded as absence, one broken camera marks a whole room absent. The system has to say what it saw, what it inferred, and what it could not see.
+
+</Section>
+
+<Section title="Six presence states">
+
+<PresenceStates />
+
+<Ev id="sa-rules">In this precedence order, every millisecond of a session gets exactly one state.</Ev> Attendance is present time divided by *observable* time; below 80% camera coverage the result is INCONCLUSIVE, not a verdict.
+
+</Section>
+
+<Section title="Architecture">
+
+Five layers. The dashed line is the privacy boundary: face images and embeddings stay on the device, and only signed attendance events cross it.
+
+<Diagram id="smart-attendance" />
+
+</Section>
+
+<Section title="API and schema">
+
+<SchemaLedger />
+
+<Ev id="sa-fields">The backend rejects unknown fields</Ev>, so an image or an embedding cannot be submitted, even by mistake.
+
+</Section>
+
+<Section title="Exactly once, under concurrency">
+
+<TwoPanels left={{ title: "Idempotency", items: ["A check-in carries an idempotency key.", "The key is recorded in its own table, in the same transaction as the event.", "A retry with the same key cannot record a second event."] }} right={{ title: "Locking", items: ["Rows are locked before they change.", "Locks are always taken in one fixed order.", "Two writers cannot wait on each other in a cycle."] }} />
+
+</Section>
+
+<Section title="Signed worker">
+
+```text
+signature = HMAC-SHA256(device_key,
+            method ‖ path ‖ SHA-256(body) ‖ timestamp ‖ nonce)
+-- a stale timestamp or a reused nonce is rejected: no replay
+```
+
+Shown as a formula, not source code. The repository is private.
+
+</Section>
+
+<Section title="Presence engine and differential testing">
+
+<Ev id="sa-diff">The engine is tested against a deliberately naive model</Ev>: interval arithmetic in integer milliseconds on one side, a slow model that decides each millisecond on its own on the other. Both get the same generated intervals; any disagreement fails. That proves the two agree, not that either matches a real classroom.
+
+</Section>
+
+<Section title="Unknown is not absent">
+
+<PresenceTimeline fig="FIG. 2" />
+
+</Section>
+
+<Section title="Evidence">
+
+<EvidenceTable ids={["sa-tests", "sa-worker", "sa-schema", "sa-routes", "sa-rules", "sa-diff"]} />
+
+</Section>
+
+<Section title="Limitations" locked>
+
+<Limitations />
+
+</Section>
+
+<Section title="Credits">
+
+Built with <Placeholder inline label="collaborator, named with her agreement" />, who developed the face-recognition worker’s foundation and kiosk device authentication. An MCA academic project. I build with AI coding tools; [how I use them](/about#ai-tools).
+
+</Section>

@@ -1,0 +1,286 @@
+[
+  {
+    "id": "pp-eval",
+    "claim": "65 of 65 evaluation runs matched the expected verdict",
+    "state": "Reproduced",
+    "date": "2026-11-14",
+    "method": "npm run eval on v1.0.2: 13 scenarios × 5 runs",
+    "source": {
+      "label": "planproof repository",
+      "url": "https://github.com/Shash-176/planproof"
+    },
+    "limitation": "The scenarios were written for this project: reproducible, not independent.",
+    "body": "All 65 runs returned the verdict each scenario expects."
+  },
+  {
+    "id": "pp-tests",
+    "claim": "124 automated tests",
+    "state": "Tested",
+    "date": "2026-11-14",
+    "method": "npm test: 8 test files",
+    "source": {
+      "label": "planproof repository",
+      "url": "https://github.com/Shash-176/planproof"
+    },
+    "body": "124 passed."
+  },
+  {
+    "id": "pp-unsafe5",
+    "claim": "5 of 5 unsafe rewrites flagged",
+    "state": "Reproduced",
+    "date": "2026-11-14",
+    "method": "Same evaluation run",
+    "source": {
+      "label": "planproof repository",
+      "url": "https://github.com/Shash-176/planproof"
+    },
+    "body": "Every scenario built to be unsafe was reported UNSAFE."
+  },
+  {
+    "id": "pp-live",
+    "claim": "PlanProof is live",
+    "state": "Live",
+    "date": "2026-11-14",
+    "method": "Page opened",
+    "source": {
+      "label": "planproof-two.vercel.app",
+      "url": "https://planproof-two.vercel.app"
+    },
+    "body": "Public, free to use, runs in the browser."
+  },
+  {
+    "id": "pp-null",
+    "claim": "On PlanProof's edge-case data the original returns 0 rows and the rewrite 52",
+    "state": "Reproduced",
+    "date": "2026-11-15",
+    "method": "PlanProof pipeline on built-in example 4 (not-exists-nulls), PostgreSQL 18.6 via PGlite 0.5.16",
+    "source": {
+      "label": "src/lib/examples.ts",
+      "url": "https://github.com/Shash-176/planproof/blob/main/src/lib/examples.ts"
+    },
+    "limitation": "Captured in Node, not yet in a browser.",
+    "body": "Main data: 9,414 rows from each query. Edge-case data: 0 against 52. Verdict UNSAFE."
+  },
+  {
+    "id": "pp-null-walk",
+    "claim": "With one order whose customer is unknown, the original returns 0 rows and the rewrite 9,414",
+    "state": "Reproduced",
+    "date": "2026-11-15",
+    "method": "Both queries run on the example's own schema and seed, plus one pending order with customer_id NULL",
+    "source": {
+      "label": "src/lib/examples.ts",
+      "url": "https://github.com/Shash-176/planproof/blob/main/src/lib/examples.ts"
+    },
+    "body": "20,000 customers, 200,000 orders, 15,192 pending, none without a customer until the one added."
+  },
+  {
+    "id": "pp-speed",
+    "claim": "The rewrite was not faster",
+    "state": "Reproduced",
+    "date": "2026-11-15",
+    "method": "Same pipeline run: median of timed runs",
+    "source": {
+      "label": "src/lib/examples.ts",
+      "url": "https://github.com/Shash-176/planproof/blob/main/src/lib/examples.ts"
+    },
+    "limitation": "WebAssembly timings in Node; a browser or a server will differ.",
+    "body": "Median 36.7 ms for the rewrite against 31.4 ms for the original: 0.86×."
+  },
+  {
+    "id": "pp-distorted",
+    "claim": "Version 1.0.0 reported distorted speed-ups",
+    "state": "Stated",
+    "source": {
+      "label": "CHANGELOG.md",
+      "url": "https://github.com/Shash-176/planproof/blob/main/CHANGELOG.md"
+    },
+    "body": "Recorded in the project's changelog; timing was then isolated and reported as a lower bound."
+  },
+  {
+    "id": "pp-arch",
+    "claim": "Four layers: page, guard, worker with PostgreSQL, verdict rule",
+    "state": "Verified",
+    "date": "2026-11-14",
+    "method": "Read in src/lib/harness and docs/ARCHITECTURE.md",
+    "source": {
+      "label": "planproof repository",
+      "url": "https://github.com/Shash-176/planproof"
+    },
+    "body": "The diagram follows the code's own structure."
+  },
+  {
+    "id": "pp-failure",
+    "claim": "The stale-worker failure and its two fixes",
+    "state": "Verified",
+    "date": "2026-11-14",
+    "method": "Read the v1.0.0 to v1.0.2 tags and changelog entries",
+    "source": {
+      "label": "CHANGELOG.md",
+      "url": "https://github.com/Shash-176/planproof/blob/main/CHANGELOG.md"
+    },
+    "body": "v1.0.1 did not fix it on the host; v1.0.2 did."
+  },
+  {
+    "id": "sa-tests",
+    "claim": "1,410 of 1,427 backend tests passed",
+    "state": "Tested",
+    "date": "2026-11-14",
+    "method": "pytest against PostgreSQL 16",
+    "source": {
+      "label": "Private repository"
+    },
+    "limitation": "15 skipped; 2 failed for environmental reasons (a missing frontend build, database trust settings).",
+    "body": "About 420 of them are integration tests against PostgreSQL."
+  },
+  {
+    "id": "sa-worker",
+    "claim": "261 worker tests passed",
+    "state": "Tested",
+    "date": "2026-11-14",
+    "method": "pytest in the worker package",
+    "source": {
+      "label": "Private repository"
+    },
+    "limitation": "12 skipped; 5 files need camera libraries.",
+    "body": "The face-recognition worker's own suite."
+  },
+  {
+    "id": "sa-schema",
+    "claim": "22 tables, 36 foreign keys, 27 CHECK constraints, 3 partial unique indexes",
+    "state": "Verified",
+    "date": "2026-11-14",
+    "method": "Counted from a freshly migrated database (5 migrations)",
+    "source": {
+      "label": "Private repository"
+    },
+    "body": "41 indexes in total. One composite foreign key makes an orphaned event impossible to store."
+  },
+  {
+    "id": "sa-routes",
+    "claim": "64 API routes in a generated authorisation matrix",
+    "state": "Verified",
+    "date": "2026-11-14",
+    "method": "Route table enumerated from the application",
+    "source": {
+      "label": "Private repository"
+    },
+    "body": "66 including the documentation routes."
+  },
+  {
+    "id": "sa-rules",
+    "claim": "Time the camera did not cover is recorded as unknown",
+    "state": "Verified",
+    "date": "2026-11-15",
+    "method": "Read in shared/presence_math.py",
+    "source": {
+      "label": "Private repository"
+    },
+    "body": "Six states in a fixed precedence order. Below 80% camera coverage the result is INCONCLUSIVE, not a verdict."
+  },
+  {
+    "id": "sa-diff",
+    "claim": "The presence engine is tested against a deliberately naive model",
+    "state": "Tested",
+    "date": "2026-11-14",
+    "method": "Differential tests in the shared suite",
+    "source": {
+      "label": "Private repository"
+    },
+    "limitation": "Agreement between two models, not accuracy in a real classroom.",
+    "body": "Both get the same generated intervals; any disagreement fails."
+  },
+  {
+    "id": "sa-fields",
+    "claim": "The backend rejects unknown fields",
+    "state": "Stated",
+    "body": "So an image or an embedding cannot be submitted, even by mistake."
+  },
+  {
+    "id": "rag-eval",
+    "claim": "Precision at 5 rose from 0.269 to 0.354 at an equal retrieval budget",
+    "state": "Reproduced",
+    "date": "2026-11-14",
+    "method": "Index rebuilt; 26-question evaluation re-run on a 19-file demo corpus (98 chunks)",
+    "source": {
+      "label": "Local repository"
+    },
+    "limitation": "A small evaluation set written for the project.",
+    "body": "Recall at 10: 0.800 to 0.877. MRR: 0.595 to 0.710. Within 0.02 of the recorded results."
+  },
+  {
+    "id": "rag-central",
+    "claim": "Centrality questions: Recall at 5 from 0.000 to 1.000",
+    "state": "Reproduced",
+    "date": "2026-11-14",
+    "method": "Same evaluation run",
+    "source": {
+      "label": "Local repository"
+    },
+    "limitation": "Three questions, and the routing keywords match their wording. A fixed bug, not a measured gain.",
+    "body": "An in-degree bonus, switched on only for centrality questions."
+  },
+  {
+    "id": "rag-checks",
+    "claim": "41 scripted checks pass",
+    "state": "Tested",
+    "date": "2026-11-14",
+    "method": "11 retrieval checks and 30 graph checks",
+    "source": {
+      "label": "Local repository"
+    },
+    "body": "Run before the evaluation."
+  },
+  {
+    "id": "rdp-recon",
+    "claim": "16 of 16 reconciliation checks pass",
+    "state": "Reproduced",
+    "date": "2026-11-14",
+    "method": "Recomputed in SQL against the recorded tables on the reproducible path",
+    "source": {
+      "label": "Private repository"
+    },
+    "limitation": "28 more checks need the study's measured data and were not run here.",
+    "body": "Each check is labelled exact, within tolerance or not comparable before it runs."
+  },
+  {
+    "id": "rdp-idem",
+    "claim": "A second run loads nothing new",
+    "state": "Reproduced",
+    "date": "2026-11-14",
+    "method": "Pipeline run twice on the same files",
+    "source": {
+      "label": "Private repository"
+    },
+    "body": "14 files seen, 0 landed: each is stored once under its name and SHA-256."
+  },
+  {
+    "id": "rdp-tests",
+    "claim": "47 tests",
+    "state": "Tested",
+    "date": "2026-11-14",
+    "method": "pytest",
+    "source": {
+      "label": "Private repository"
+    },
+    "limitation": "21 are skipped without the study's files.",
+    "body": "26 passed."
+  },
+  {
+    "id": "edu",
+    "claim": "MCA at K. J. Somaiya Institute of Management, graduating 2027; B.Sc. IT from Patkar-Varde College",
+    "state": "Stated",
+    "body": "My own statement; the résumé carries the same facts."
+  },
+  {
+    "id": "icon",
+    "claim": "Head of Development Team, ICON",
+    "state": "Stated",
+    "body": "The institute's technology festival."
+  },
+  {
+    "id": "cert",
+    "claim": "IBM Professional Certificate in deep learning",
+    "state": "Stated",
+    "body": "Deep Learning with PyTorch, Keras and TensorFlow, Coursera, 2026."
+  }
+]

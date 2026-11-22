@@ -1,0 +1,61 @@
+---
+// Claim · method · date · source, generated from the same records as the notes.
+import Ev from "./Ev.astro";
+import State from "./State.astro";
+import { getEvidence, formatDate } from "@/lib/evidence";
+interface Props {
+  ids: string[];
+}
+const rows = await Promise.all(Astro.props.ids.map(async (id) => ({ id, e: await getEvidence(id) })));
+---
+
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Claim</th>
+        <th scope="col">How it is known</th>
+        <th scope="col">Date</th>
+        <th scope="col">Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(({ id, e }) => (
+        <tr>
+          <td>
+            <Ev id={id} mark={false}>
+              {e.claim}
+            </Ev>
+          </td>
+          <td>
+            <State state={e.state} />
+            <br />
+            <span class="muted">{e.method ?? "—"}</span>
+          </td>
+          <td class="mono nowrap">{formatDate(e.date) || "—"}</td>
+          <td>
+            {e.source?.url ? (
+              <a class="link" href={e.source.url} rel="noopener noreferrer">
+                {e.source.label} ↗
+              </a>
+            ) : (
+              (e.source?.label ?? "—")
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style>
+  table {
+    min-width: 620px;
+  }
+  .nowrap {
+    white-space: nowrap;
+    font-size: var(--fs-label);
+  }
+  .muted {
+    font-size: var(--fs-note);
+  }
+</style>

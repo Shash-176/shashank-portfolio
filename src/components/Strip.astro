@@ -1,0 +1,36 @@
+---
+// Verification strip: three or four facts with marks, generated from evidence records.
+import State from "./State.astro";
+import { getEvidence } from "@/lib/evidence";
+interface Props {
+  ids: string[];
+  extra?: string;
+}
+const { ids, extra } = Astro.props;
+const items = await Promise.all(ids.map(getEvidence));
+---
+
+<ul class="strip" aria-label="Verification summary">
+  {items.map((e) => (
+    <li>
+      <State state={e.state} word={e.claim} />
+    </li>
+  ))}
+  {extra && <li class="label">{extra}</li>}
+</ul>
+<style>
+  .strip {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    border-top: var(--frame);
+    border-bottom: var(--frame);
+  }
+  li {
+    display: flex;
+    align-items: center;
+  }
+</style>

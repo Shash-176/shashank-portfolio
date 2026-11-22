@@ -1,0 +1,42 @@
+---
+// The page's permanent evidence list: always in the HTML; the no-JS and print target of every numeral.
+interface Props {
+  count: number;
+  html: string;
+}
+const { count, html } = Astro.props;
+---
+
+{count > 0 && (
+  <section class="evidence-list page" aria-labelledby="evidence-heading">
+    <h2 id="evidence-heading">Evidence notes</h2>
+    <p class="label">{count} claims on this page. Each says how it is known, when, and where to check.</p>
+    <ol set:html={html} />
+  </section>
+)}
+<style>
+  .evidence-list {
+    margin-top: var(--s-8);
+    padding-top: var(--s-5);
+    border-top: var(--frame);
+  }
+  h2 {
+    font-size: var(--fs-section);
+    margin-bottom: var(--s-2);
+  }
+  ol {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--s-4);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: var(--s-5);
+  }
+  ol :global(li) {
+    border-top: var(--hair);
+    padding-top: var(--s-3);
+  }
+  ol :global(li:has(:target)) {
+    background: var(--tint);
+  }
+</style>

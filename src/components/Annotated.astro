@@ -1,0 +1,31 @@
+---
+/**
+ * A block of content with its evidence margin. The layout fills the margin with the notes first used
+ * in this block. They follow the text in the DOM (reading order) and sit beside it on wide screens.
+ */
+interface Props {
+  as?: "section" | "div";
+  id?: string;
+  labelledby?: string;
+  always?: boolean;
+  class?: string;
+}
+const { as: Tag = "section", id, labelledby, always = false, class: cls } = Astro.props;
+const k = String(Math.floor(Math.random() * 1e12));
+---
+
+<Tag class:list={["with-margin", cls]} id={id} aria-labelledby={labelledby}>
+  <div class="content">
+    <template data-ev-scope={k}></template>
+    <slot />
+  </div>
+  <aside class="margin" aria-label="Evidence notes">
+    <slot name="margin-top" />
+    <template data-ev-notes={k} data-always={always ? "1" : "0"}></template>
+  </aside>
+</Tag>
+<style>
+  .content {
+    min-width: 0;
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+// Renders a content string, turning [[todo: …]] into a visible placeholder that blocks a release build.
+import { PLACEHOLDER } from "@/lib/rules";
+interface Props {
+  value: string;
+}
+const { value } = Astro.props;
+const parts: { text: string; todo: boolean }[] = [];
+let last = 0;
+for (const m of value.matchAll(new RegExp(PLACEHOLDER.source, "g"))) {
+  if (m.index! > last) parts.push({ text: value.slice(last, m.index), todo: false });
+  parts.push({ text: m[1].trim(), todo: true });
+  last = m.index! + m[0].length;
+}
+if (last < value.length) parts.push({ text: value.slice(last), todo: false });
+---
+
+{parts.map((p) =>
+  p.todo ? (
+    <span class="placeholder" data-placeholder={p.text}>
+      [{p.text}]
+    </span>
+  ) : (
+    p.text
+  ),
+)}

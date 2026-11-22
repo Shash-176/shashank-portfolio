@@ -1,0 +1,12 @@
+[
+  {
+    "id": "image-retention",
+    "title": "Usage-Aware Progressive Image Retention",
+    "status": "in-progress",
+    "tier": "method",
+    "problem": "[[todo: one paragraph in your words on the question the study asks]]",
+    "method": "A deterministic simulation that compares storage retention policies, with a rule for when two policies can be compared fixed before any results were seen.",
+    "notShown": "Results, charts, the full protocol and the data are held until the study is published, so the paper is the first place they appear.",
+    "related": "research-data-platform"
+  }
+]

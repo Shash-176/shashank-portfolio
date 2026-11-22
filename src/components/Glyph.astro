@@ -1,0 +1,21 @@
+---
+import { GLYPHS } from "@/lib/glyphs";
+interface Props {
+  state: string;
+  size?: number;
+}
+const { state, size = 15 } = Astro.props;
+const g = GLYPHS[state];
+if (!g) throw new Error(`No glyph for state "${state}"`);
+---
+
+<Fragment
+  set:html={`<svg class="glyph" aria-hidden="true" focusable="false" width="${size}" height="${size}" viewBox="${g.viewBox}" ${g.attrs}>${g.body}</svg>`}
+/>
+<style is:global>
+  .glyph {
+    display: inline-block;
+    flex: none;
+    vertical-align: -0.15em;
+  }
+</style>

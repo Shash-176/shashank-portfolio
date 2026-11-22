@@ -1,0 +1,116 @@
+---
+name: PlanProof
+order: 1
+depth: full
+access: public
+claim: AI proposes the SQL. PostgreSQL decides whether it works.
+description: "PlanProof runs AI-suggested SQL indexes and rewrites in a real PostgreSQL in the browser and returns a verdict: verified, ineffective, unsafe or invalid."
+row:
+  idea: AI gives confident SQL advice. This runs it in a real PostgreSQL in the browser and lets the database decide.
+  evidence: [pp-live, pp-eval, pp-tests]
+  note: MIT
+brief:
+  problem: AI assistants give confident SQL advice that nobody runs.
+  idea: Run the suggestion in a real PostgreSQL in the browser and let the database decide.
+  evidence: 65 of 65 evaluation runs matched; 124 tests; live.
+  limit: Synthetic data. Equivalence is tested, not proven.
+briefEvidence: pp-eval
+strip: [pp-live, pp-eval, pp-tests]
+repository: https://github.com/Shash-176/planproof
+live: https://planproof-two.vercel.app
+diagram: planproof
+exhibit: null-trap
+mark: { layers: 4, selected: 2 }
+limitations:
+  - Synthetic data. A real table can hold cases none of the three datasets do.
+  - Timings come from PostgreSQL compiled to WebAssembly, not a server.
+  - Equivalence is tested on three datasets, not proven.
+  - One read-only query at a time.
+  - The evaluation scenarios were written for this project, so the evaluation is reproducible, not independent.
+---
+
+<Section title="Problem">
+
+Ask an assistant to speed up a query and it will usually answer with an index or a rewrite, and an explanation of why it is faster. The explanation is not a measurement, and the rewrite may not even return the same rows. PlanProof treats the suggestion as a candidate and checks it against the query you already trust.
+
+```sql
+-- "NOT IN is supposed to be bad. Rewrite this for me."
+SELECT c.id, c.name FROM customers c
+WHERE c.id NOT IN (SELECT customer_id FROM orders WHERE status = 'pending')
+```
+
+</Section>
+
+<Section title="Why the obvious checks fail">
+
+| Obvious check | Why it is not enough |
+| --- | --- |
+| Read the assistant’s explanation | It describes a plan; it does not run one. |
+| Time both queries | Browser clocks are coarse. <Ev id="pp-distorted">Version 1.0.0 reported distorted speed-ups</Ev> until timing was isolated and reported as a lower bound. |
+| Compare results on your data | Ordinary data hides edge cases. In the NULL trap below, both queries return 9,414 rows until one value is unknown. |
+
+</Section>
+
+<Section title="Architecture">
+
+<Ev id="pp-arch">Four layers, each with one job.</Ev> The selected layer is where the work happens: the suggestion is executed, not judged.
+
+<Diagram id="planproof" />
+
+</Section>
+
+<Section title="The NULL trap">
+
+<NullTrap fig="FIG. 2" />
+
+</Section>
+
+<Section title="Decisions">
+
+| Chosen | Rejected | Why |
+| --- | --- | --- |
+| Structural checks before timing | Timing first | A faster wrong answer is still wrong. |
+| Multiset comparison of canonical rows | Set comparison | Sets hide duplicated rows. |
+| Index trials rolled back | Keep the index | Each candidate starts from the same database. |
+| A worker with a watchdog | Run on the page | A runaway query cannot freeze the tab. |
+| 1.5× plus cost or rows read | Any measured speed-up | Noise on coarse clocks looks like a win. |
+
+</Section>
+
+<Section title="The first fix that failed">
+
+<Ev id="pp-failure">The production failure and both fixes are recorded in the changelog.</Ev>
+
+<Timeline events={[
+  { tag: "v1.0.0", title: "Every run failed for returning visitors", body: "A new security header was added. Browsers that had cached the old worker script ran it without the header, and the sandbox crashed.", outcome: "bad" },
+  { tag: "v1.0.1", title: "Versioned assets", body: "It fixed the problem on a local production server, not on the host.", outcome: "bad" },
+  { tag: "v1.0.2", title: "Fetch the worker again, once", body: "On that failure the worker is downloaded again, bypassing the cache.", outcome: "ok" },
+]} />
+
+</Section>
+
+<Section title="Evidence">
+
+<EvidenceTable ids={["pp-eval", "pp-tests", "pp-unsafe5", "pp-null", "pp-speed", "pp-live"]} />
+
+</Section>
+
+<Section title="Limitations" locked>
+
+<Limitations />
+
+</Section>
+
+<Section title="What I would change">
+
+<Placeholder label="What I would change, in my own words" />
+
+</Section>
+
+<Section title="Credits and links">
+
+Built during BharatCode Build League, Round 1, in November 2026. I build with AI coding tools; [how I use them](/about#ai-tools).
+
+<Links />
+
+</Section>

@@ -1,0 +1,31 @@
+[
+  {
+    "id": "mca",
+    "organisation": "K. J. Somaiya Institute of Management, Mumbai",
+    "title": "Master of Computer Applications",
+    "start": "2025",
+    "end": "2027",
+    "kind": "education",
+    "summary": "Second year.",
+    "evidence": ["edu"]
+  },
+  {
+    "id": "bsc",
+    "organisation": "Patkar-Varde College, Mumbai",
+    "title": "B.Sc. Information Technology",
+    "start": "2022",
+    "end": "2025",
+    "kind": "education",
+    "summary": "",
+    "evidence": ["edu"]
+  },
+  {
+    "id": "icon",
+    "organisation": "ICON, the institute's technology festival",
+    "title": "Head of Development Team",
+    "start": "[[todo: year]]",
+    "kind": "leadership",
+    "summary": "[[todo: edition, team size and what shipped]]",
+    "evidence": ["icon"]
+  }
+]
