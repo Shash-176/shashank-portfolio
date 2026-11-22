@@ -95,6 +95,9 @@ const { fig, title, claim, mode, id, doesNotProve, start = 1 } = Astro.props;
   .step h3:focus {
     outline: none;
   }
+  .step h3 .label {
+    white-space: nowrap;
+  }
   .rail {
     display: none;
   }
@@ -165,8 +168,15 @@ const { fig, title, claim, mode, id, doesNotProve, start = 1 } = Astro.props;
       border-top: var(--hair);
       z-index: 2;
     }
-    html.js [data-exhibit] .ex-controls .btn {
-      flex: 1;
+    html.js [data-exhibit] .ex-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    html.js [data-exhibit] .ex-controls .spacer {
+      display: none;
+    }
+    html.js [data-exhibit] .ex-controls > a.btn {
+      grid-column: 1 / -1;
     }
   }
   .verdict {
