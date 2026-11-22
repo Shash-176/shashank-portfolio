@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+test-results/
+playwright-report/
+blob-report/
+lighthouse/
+.vercel/
+.wrangler/
+*.log
+.DS_Store
+Thumbs.db
+tests/e2e/__screenshots__/
