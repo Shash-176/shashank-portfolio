@@ -1,6 +1,12 @@
 // Public changelog, newest first. Each release also has a git tag.
 export const CHANGELOG = [
   {
+    version: "1.0.0-rc.1",
+    date: "2026-11-26",
+    notes:
+      "V1 candidate: page transitions, previous and next case studies, architecture marks on case-study headers, short evidence labels, a phone-first capabilities list, and education, leadership and research details filled in.",
+  },
+  {
     version: "0.11.0",
     date: "2026-11-22",
     notes:

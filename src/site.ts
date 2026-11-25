@@ -20,7 +20,7 @@ export const SITE = {
     text: "I build with AI coding tools. I am responsible for the design decisions, the verification and what ships.",
     approved: false,
   },
-  version: "0.11.0",
-  updated: "2026-11-22",
+  version: "1.0.0-rc.1",
+  updated: "2026-11-26",
   themeColor: { light: "#F6F6F3", dark: "#0E0F12" },
 } as const;

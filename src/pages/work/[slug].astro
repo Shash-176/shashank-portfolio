@@ -17,16 +17,25 @@ import Links from "@/components/mdx/Links.astro";
 import PresenceStates from "@/components/mdx/PresenceStates.astro";
 import SchemaLedger from "@/components/mdx/SchemaLedger.astro";
 import TwoPanels from "@/components/mdx/TwoPanels.astro";
+import MiniMark from "@/components/MiniMark.astro";
 import { SITE } from "@/site";
+import { slug } from "@/lib/slug";
 
 export async function getStaticPaths() {
-  const projects = (await getCollection("projects")).filter((p) => p.data.status === "published");
-  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+  const projects = (await getCollection("projects"))
+    .filter((p) => p.data.status === "published")
+    .sort((a, b) => a.data.order - b.data.order);
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, prev: projects[i - 1], next: projects[i + 1] },
+  }));
 }
 interface Props {
   project: CollectionEntry<"projects">;
+  prev?: CollectionEntry<"projects">;
+  next?: CollectionEntry<"projects">;
 }
-const { project } = Astro.props;
+const { project, prev, next } = Astro.props;
 const d = project.data;
 Astro.locals.project = project;
 const { Content } = await render(project);
@@ -46,13 +55,6 @@ const components = {
   TwoPanels,
 };
 const sections = [...(project.body ?? "").matchAll(/<Section title="([^"]+)"/g)].map((m) => m[1]);
-const slug = (s: string) =>
-  s
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[^\w\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
 const full = d.depth === "full";
 const jsonLd = {
   "@context": "https://schema.org",
@@ -75,10 +77,13 @@ const jsonLd = {
 >
   <div class="page">
     <header class="cs-head">
+      <span class="cs-mark" aria-hidden="true">
+        <MiniMark mark={d.mark} size={150} />
+      </span>
       <p class="label">
         <a href="/work">Work</a> / {String(d.order).padStart(2, "0")} / {full ? "Full case study" : "Short case study"}
       </p>
-      <h1>{d.name}</h1>
+      <h1 style={`view-transition-name: title-${project.id}`}>{d.name}</h1>
       <p class="claim">{d.claim}</p>
       <Strip ids={d.strip.map((s) => s.id)} extra={d.access === "private" ? "Private source" : undefined} />
       <div class="links">
@@ -140,9 +145,99 @@ const jsonLd = {
         <Content components={components} />
       </div>
     </div>
+    <nav class="pager" aria-label="More case studies">
+      {prev ? (
+        <a href={`/work/${prev.id}`} rel="prev">
+          <span class="label">← Previous</span>
+          <strong>{prev.data.name}</strong>
+          <span>{prev.data.claim}</span>
+        </a>
+      ) : (
+        <a href="/work">
+          <span class="label">← All work</span>
+          <strong>Work</strong>
+          <span>Every project, ordered by strength of evidence.</span>
+        </a>
+      )}
+      {next ? (
+        <a href={`/work/${next.id}`} rel="next" class="nx">
+          <span class="label">Next →</span>
+          <strong>{next.data.name}</strong>
+          <span>{next.data.claim}</span>
+        </a>
+      ) : (
+        <a href="/research" class="nx">
+          <span class="label">Next →</span>
+          <strong>Research</strong>
+          <span>What is in progress, and what is held until publication.</span>
+        </a>
+      )}
+    </nav>
   </div>
 </Base>
 <style>
+  .pager {
+    margin-top: var(--s-8);
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: var(--bold-line);
+  }
+  .pager a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--s-4) 0;
+    text-decoration: none;
+    border-bottom: var(--hair);
+  }
+  .pager strong {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+  }
+  .pager a:hover strong {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+  .pager span:last-child {
+    color: var(--muted);
+    font-size: var(--fs-note);
+  }
+  @media (min-width: 768px) {
+    .pager {
+      grid-template-columns: 1fr 1fr;
+    }
+    .pager a {
+      padding: var(--s-5) var(--s-5) var(--s-5) 0;
+      border-bottom: 0;
+    }
+    .pager .nx {
+      text-align: right;
+      align-items: flex-end;
+      padding: var(--s-5) 0 var(--s-5) var(--s-5);
+      border-left: var(--hair);
+    }
+  }
+  .cs-mark {
+    display: none;
+  }
+  @media (min-width: 1100px) {
+    .cs-head {
+      position: relative;
+      padding-right: 220px;
+    }
+    .cs-mark {
+      display: flex;
+      position: absolute;
+      right: 0;
+      top: var(--s-6);
+      width: 190px;
+      height: 190px;
+      align-items: center;
+      justify-content: center;
+      border: var(--hair);
+      background: var(--surface);
+    }
+  }
   .cs-head {
     padding: var(--s-6) 0 var(--s-5);
     display: flex;

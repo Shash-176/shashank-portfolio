@@ -26,7 +26,7 @@ export function noteHtml(e: Evidence & { id: string }, n: number, variant: "marg
   const attrs = variant === "margin" ? ` role="note" aria-label="Evidence note ${n}" tabindex="-1"` : "";
   const cls = ["note", variant, always ? "always" : ""].filter(Boolean).join(" ");
   const parts = [
-    `<p class="head"><strong>[${n}]</strong> ${glyph(e.state, 13)} ${esc(e.state)}${e.date ? ` · ${formatDate(e.date)}` : ""}</p>`,
+    `<p class="note-head"><strong>[${n}]</strong> ${glyph(e.state, 13)} ${esc(e.state)}${e.date ? ` · ${formatDate(e.date)}` : ""}</p>`,
     variant === "list" ? `<p class="claim-text">${text(e.claim)}.</p>` : "",
     `<p>${text(e.body)}</p>`,
     e.method ? `<p class="method"><span class="sr-only">Method: </span>${text(e.method)}</p>` : "",

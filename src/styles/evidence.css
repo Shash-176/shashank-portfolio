@@ -12,7 +12,7 @@
   flex-direction: column;
   gap: 4px;
 }
-.head {
+.note .note-head {
   font-family: var(--font-mono);
   font-size: var(--fs-label);
   display: flex;
@@ -20,28 +20,28 @@
   align-items: center;
   gap: 5px;
 }
-.method,
-.src {
+.note .method,
+.note .src {
   color: var(--muted);
 }
-.method {
+.note .method {
   font-family: var(--font-mono);
   font-size: var(--fs-label);
 }
-.limit {
+.note .limit {
   color: var(--warn);
   display: flex;
   gap: 6px;
   align-items: baseline;
 }
-.limit .glyph {
+.note .limit .glyph {
   flex: none;
   transform: translateY(2px);
 }
-.claim-text {
+.note .claim-text {
   font-weight: 600;
 }
-.close {
+.note .close {
   align-self: flex-start;
   margin-top: 4px;
   min-height: 32px;
@@ -52,7 +52,7 @@
   font-family: var(--font-mono);
   cursor: pointer;
 }
-.close kbd {
+.note .close kbd {
   color: var(--muted);
 }
 

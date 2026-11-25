@@ -22,11 +22,13 @@ const depth = d.depth === "full" ? (d.exhibit ? "Full case study + exhibit" : "F
       <MiniMark mark={d.mark} size={tall ? 88 : 40} />
     </span>
     <span class="body">
-      <span class="name">{d.name}</span>
+      <span class="name" style={`view-transition-name: title-${project.id}`}>
+        {d.name}
+      </span>
       <span class="idea">{d.row.idea}</span>
       <span class="ev">
         {ev.map((e) => (
-          <State state={e.state} word={e.claim} size={13} />
+          <State state={e.state} word={e.short ?? e.claim} size={13} />
         ))}
       </span>
     </span>
@@ -36,7 +38,7 @@ const depth = d.depth === "full" ? (d.exhibit ? "Full case study + exhibit" : "F
         {d.row.note ? ` · ${d.row.note}` : ""}
       </span>
       <span class="depth">
-        {depth} <span aria-hidden="true">→</span>
+        {depth}&nbsp;<span aria-hidden="true">→</span>
       </span>
     </span>
   </a>

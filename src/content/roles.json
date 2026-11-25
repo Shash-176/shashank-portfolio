@@ -6,7 +6,7 @@
     "start": "2025",
     "end": "2027",
     "kind": "education",
-    "summary": "Second year.",
+    "summary": "CGPA 8.47/10 · second year",
     "evidence": ["edu"]
   },
   {
@@ -16,16 +16,16 @@
     "start": "2022",
     "end": "2025",
     "kind": "education",
-    "summary": "",
+    "summary": "CGPA 9.15/10",
     "evidence": ["edu"]
   },
   {
     "id": "icon",
     "organisation": "ICON, the institute's technology festival",
     "title": "Head of Development Team",
-    "start": "[[todo: year]]",
+    "start": "2026",
     "kind": "leadership",
-    "summary": "[[todo: edition, team size and what shipped]]",
+    "summary": "Led website development and CI/CD deployment.",
     "evidence": ["icon"]
   }
 ]

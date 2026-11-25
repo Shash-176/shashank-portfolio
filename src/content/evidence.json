@@ -10,7 +10,8 @@
       "url": "https://github.com/Shash-176/planproof"
     },
     "limitation": "The scenarios were written for this project: reproducible, not independent.",
-    "body": "All 65 runs returned the verdict each scenario expects."
+    "body": "All 65 runs returned the verdict each scenario expects.",
+    "short": "65 of 65 evaluation runs"
   },
   {
     "id": "pp-tests",
@@ -22,7 +23,8 @@
       "label": "planproof repository",
       "url": "https://github.com/Shash-176/planproof"
     },
-    "body": "124 passed."
+    "body": "124 passed.",
+    "short": "124 tests"
   },
   {
     "id": "pp-unsafe5",
@@ -46,7 +48,8 @@
       "label": "planproof-two.vercel.app",
       "url": "https://planproof-two.vercel.app"
     },
-    "body": "Public, free to use, runs in the browser."
+    "body": "Public, free to use, runs in the browser.",
+    "short": "Live"
   },
   {
     "id": "pp-null",
@@ -130,7 +133,8 @@
       "label": "Private repository"
     },
     "limitation": "15 skipped; 2 failed for environmental reasons (a missing frontend build, database trust settings).",
-    "body": "About 420 of them are integration tests against PostgreSQL."
+    "body": "About 420 of them are integration tests against PostgreSQL.",
+    "short": "1,410 of 1,427 tests pass"
   },
   {
     "id": "sa-worker",
@@ -153,7 +157,8 @@
     "source": {
       "label": "Private repository"
     },
-    "body": "41 indexes in total. One composite foreign key makes an orphaned event impossible to store."
+    "body": "41 indexes in total. One composite foreign key makes an orphaned event impossible to store.",
+    "short": "22 tables · 36 foreign keys"
   },
   {
     "id": "sa-routes",
@@ -164,7 +169,8 @@
     "source": {
       "label": "Private repository"
     },
-    "body": "66 including the documentation routes."
+    "body": "66 including the documentation routes.",
+    "short": "64 API routes"
   },
   {
     "id": "sa-rules",
@@ -205,7 +211,8 @@
       "label": "Local repository"
     },
     "limitation": "A small evaluation set written for the project.",
-    "body": "Recall at 10: 0.800 to 0.877. MRR: 0.595 to 0.710. Within 0.02 of the recorded results."
+    "body": "Recall at 10: 0.800 to 0.877. MRR: 0.595 to 0.710. Within 0.02 of the recorded results.",
+    "short": "P@5 0.27 → 0.35"
   },
   {
     "id": "rag-central",
@@ -217,7 +224,8 @@
       "label": "Local repository"
     },
     "limitation": "Three questions, and the routing keywords match their wording. A fixed bug, not a measured gain.",
-    "body": "An in-degree bonus, switched on only for centrality questions."
+    "body": "An in-degree bonus, switched on only for centrality questions.",
+    "short": "Centrality fix, n = 3"
   },
   {
     "id": "rag-checks",
@@ -228,7 +236,8 @@
     "source": {
       "label": "Local repository"
     },
-    "body": "Run before the evaluation."
+    "body": "Run before the evaluation.",
+    "short": "41 scripted checks"
   },
   {
     "id": "rdp-recon",
@@ -240,7 +249,8 @@
       "label": "Private repository"
     },
     "limitation": "28 more checks need the study's measured data and were not run here.",
-    "body": "Each check is labelled exact, within tolerance or not comparable before it runs."
+    "body": "Each check is labelled exact, within tolerance or not comparable before it runs.",
+    "short": "16 of 16 reconciliation checks"
   },
   {
     "id": "rdp-idem",
@@ -251,7 +261,8 @@
     "source": {
       "label": "Private repository"
     },
-    "body": "14 files seen, 0 landed: each is stored once under its name and SHA-256."
+    "body": "14 files seen, 0 landed: each is stored once under its name and SHA-256.",
+    "short": "Reloads land nothing new"
   },
   {
     "id": "rdp-tests",
@@ -263,11 +274,12 @@
       "label": "Private repository"
     },
     "limitation": "21 are skipped without the study's files.",
-    "body": "26 passed."
+    "body": "26 passed.",
+    "short": "47 tests"
   },
   {
     "id": "edu",
-    "claim": "MCA at K. J. Somaiya Institute of Management, graduating 2027; B.Sc. IT from Patkar-Varde College",
+    "claim": "MCA at K. J. Somaiya Institute of Management (CGPA 8.47/10), graduating 2027; B.Sc. IT from Patkar-Varde College (CGPA 9.15/10)",
     "state": "Stated",
     "body": "My own statement; the résumé carries the same facts."
   },
@@ -275,12 +287,22 @@
     "id": "icon",
     "claim": "Head of Development Team, ICON",
     "state": "Stated",
-    "body": "The institute's technology festival."
+    "body": "The institute's annual technology festival. I led website development and CI/CD deployment."
   },
   {
     "id": "cert",
     "claim": "IBM Professional Certificate in deep learning",
     "state": "Stated",
     "body": "Deep Learning with PyTorch, Keras and TensorFlow, Coursera, 2026."
+  },
+  {
+    "id": "pp-limits",
+    "claim": "Where PlanProof stops, from its own architecture notes",
+    "state": "Stated",
+    "source": {
+      "label": "docs/ARCHITECTURE.md",
+      "url": "https://github.com/Shash-176/planproof/blob/main/docs/ARCHITECTURE.md"
+    },
+    "body": "Dataset size, AI capacity and rate limiting are documented as the current scaling limits."
   }
 ]

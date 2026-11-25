@@ -8,7 +8,7 @@ let pinned: { note: HTMLElement; from: HTMLElement } | null = null;
 
 function counts() {
   const notes = document.querySelectorAll(".evidence-list li");
-  const stated = [...notes].filter((li) => li.querySelector(".head")?.textContent?.includes("Stated")).length;
+  const stated = [...notes].filter((li) => li.querySelector(".note-head")?.textContent?.includes("Stated")).length;
   return { total: notes.length, sourced: notes.length - stated, stated };
 }
 

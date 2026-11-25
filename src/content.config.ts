@@ -12,6 +12,8 @@ const evidence = defineCollection({
     .object({
       id: z.string(),
       claim: z.string(),
+      /** Short label for verification strips and project rows. */
+      short: z.string().max(36).optional(),
       state: z.enum(STATES),
       date: z.string().optional(),
       method: z.string().optional(),

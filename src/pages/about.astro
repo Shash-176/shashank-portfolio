@@ -143,6 +143,28 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
           </tbody>
         </table>
       </div>
+      <ul class="caps-list" aria-label="Capabilities by project">
+        {caps.map((c) => (
+          <li>
+            <strong>{c.data.name}</strong>
+            <span class="muted">{c.data.description}</span>
+            <span class="where">
+              {projects
+                .filter((p) => c.data.substantial.some((r) => r.id === p.id))
+                .map((p) => (
+                  <a href={`/work/${p.id}`}>● {short[p.id] ?? p.data.name}</a>
+                ))}
+              {projects
+                .filter((p) => c.data.supporting.some((r) => r.id === p.id))
+                .map((p) => (
+                  <a href={`/work/${p.id}`} class="sup">
+                    ○ {short[p.id] ?? p.data.name}
+                  </a>
+                ))}
+            </span>
+          </li>
+        ))}
+      </ul>
     </section>
 
     <Annotated as="section" labelledby="leadership" class="block two">
@@ -166,7 +188,7 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
           <Ev id="cert">
             <strong>IBM Professional Certificate</strong>: Deep Learning with PyTorch, Keras and TensorFlow
           </Ev>{" "}
-          (Coursera, 2026). <Text value="[[todo: credential link]]" />
+          (Coursera, 2026).
         </p>
       </div>
     </Annotated>
@@ -221,6 +243,46 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
   </div>
 </Base>
 <style>
+  .caps-list {
+    display: none;
+    list-style: none;
+    padding: 0;
+    border-top: var(--frame);
+  }
+  .caps-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 0;
+    border-bottom: var(--hair);
+  }
+  .where {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin-top: 4px;
+  }
+  .where a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 10px;
+    border: var(--frame);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+  }
+  .where a.sup {
+    border-style: dashed;
+  }
+  @media (max-width: 767.98px) {
+    .table-scroll:has(.caps) {
+      display: none;
+    }
+    .caps-list {
+      display: block;
+    }
+  }
   :global(.intro) {
     padding: var(--s-6) 0 var(--s-5);
   }

@@ -219,8 +219,24 @@ ol {
   border-color: currentColor;
 }
 
+/* ---------- page transitions (progressive; same-origin navigations only) ---------- */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--t-step);
+  animation-timing-function: var(--ease-out);
+}
+.site-header {
+  view-transition-name: site-header;
+}
+
 /* ---------- motion ---------- */
 @media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
   *,
   *::before,
   *::after {

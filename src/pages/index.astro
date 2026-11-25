@@ -78,6 +78,10 @@ const proofs = [
           <a class="btn" href="#null-trap">
             Watch the first one fail ↓
           </a>
+          <span class="hint">
+            Every claim on this site has a note like these. Press <kbd>E</kbd>, or <em>Evidence</em> in the header, to
+            show them all.
+          </span>
         </p>
       </div>
       <Avatar
@@ -148,6 +152,22 @@ const proofs = [
   </div>
 </Base>
 <style>
+  .run {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3) var(--s-4);
+    align-items: center;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: var(--fs-note);
+    max-width: 46ch;
+  }
+  .hint kbd {
+    border: var(--hair);
+    padding: 0 5px;
+    background: var(--surface);
+  }
   :global(.hero) {
     padding: var(--s-6) 0 var(--s-6);
   }

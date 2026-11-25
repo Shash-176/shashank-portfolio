@@ -133,3 +133,32 @@ test("diagram controls select layers and assemble", async ({ page }) => {
   await fig.getByRole("button", { name: "Assemble" }).click();
   await expect(fig).toHaveAttribute("data-mode", "assembled");
 });
+
+test("case studies link to the previous and next project in order", async ({ page }) => {
+  await page.goto("/work/planproof");
+  const pager = page.getByRole("navigation", { name: "More case studies" });
+  await expect(pager.getByRole("link", { name: /Next.*Smart Attendance/ })).toBeVisible();
+  await page.goto("/work/research-data-platform");
+  await expect(
+    page
+      .getByRole("navigation", { name: "More case studies" })
+      .getByRole("link", { name: /Research/ })
+      .last(),
+  ).toBeVisible();
+});
+
+test("on phones, capabilities are a list of linked projects, not a scrolling table", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/about");
+  await expect(page.locator("table.caps")).toBeHidden();
+  await expect(page.getByRole("list", { name: "Capabilities by project" }).getByRole("link").first()).toBeVisible();
+});
+
+test("page headers are left-aligned (no global note styles leaking)", async ({ page }) => {
+  for (const path of ["/research", "/work"]) {
+    await page.goto(path);
+    const h1 = await page.locator("h1").boundingBox();
+    const main = await page.locator("main .page").first().boundingBox();
+    expect(Math.abs(h1!.x - (main!.x + 40)), path).toBeLessThan(48);
+  }
+});

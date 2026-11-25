@@ -13,7 +13,7 @@ const items = await Promise.all(ids.map(getEvidence));
 <ul class="strip" aria-label="Verification summary">
   {items.map((e) => (
     <li>
-      <State state={e.state} word={e.claim} />
+      <State state={e.state} word={e.short ?? e.claim} />
     </li>
   ))}
   {extra && <li class="label">{extra}</li>}

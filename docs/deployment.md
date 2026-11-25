@@ -24,15 +24,11 @@ Build command `npm run build`, output `dist`, environment variable `SITE_URL`. H
 
 ## Placeholders blocking v1.0
 
-| Placeholder                            | Where                                                              |
-| -------------------------------------- | ------------------------------------------------------------------ |
-| Public email address                   | Footer and menu, every page (`src/site.ts`)                        |
-| LinkedIn address                       | Footer (`src/site.ts`)                                             |
-| Résumé PDF, its size and date          | Header, About, `/resume` (`src/site.ts`; put the PDF in `public/`) |
-| AI-tools statement approval            | About (`src/site.ts` → `aiStatement.approved`)                     |
-| What I would change                    | PlanProof case study                                               |
-| Collaborator, named with her agreement | Smart Attendance credits                                           |
-| Research problem paragraph             | `/research` (`src/content/research.json`)                          |
-| ICON edition, team, year               | About (`src/content/roles.json`)                                   |
-| Certification credential link          | About                                                              |
-| Production domain                      | `SITE_URL` (a `*.vercel.app` address is fine)                      |
+| Placeholder                   | Where to set it                                                                                              |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Public email address          | `src/site.ts` → `email`                                                                                      |
+| LinkedIn address              | `src/site.ts` → `linkedin`                                                                                   |
+| Résumé PDF, its size and date | Put the PDF in `public/` (for example `public/shashank-maheshwar-resume.pdf`), then `src/site.ts` → `resume` |
+| AI-tools statement            | `src/site.ts` → `aiStatement` (edit `text` if needed, set `approved: true`)                                  |
+
+Optional: `SITE_URL` for a custom domain (a free `*.vercel.app` address works as is).

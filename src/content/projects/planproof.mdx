@@ -101,15 +101,19 @@ WHERE c.id NOT IN (SELECT customer_id FROM orders WHERE status = 'pending')
 
 </Section>
 
-<Section title="What I would change">
+<Section title="What would change next">
 
-<Placeholder label="What I would change, in my own words" />
+<Ev id="pp-limits">The project documents where it stops</Ev>, and what would move each limit:
+
+- **Rate limiting** is per serverless instance, in memory. A shared store such as Redis would make it global, at the cost of a new dependency.
+- **Datasets** are bounded by browser memory: up to 10,000 rows per parent table and 100,000 per child table; result sets above 200,000 rows are not compared.
+- **AI suggestions** share one free-tier provider quota across all visitors.
 
 </Section>
 
 <Section title="Credits and links">
 
-Built during BharatCode Build League, Round 1, in November 2026. I build with AI coding tools; [how I use them](/about#ai-tools).
+Started on 10 November 2026 as an entry to BharatCode Build League, Round 1, and carried through to a versioned 1.0.2 release with tests, an evaluation harness, CI and a live deployment. I build with AI coding tools; [how I use them](/about#ai-tools).
 
 <Links />
 
