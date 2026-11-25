@@ -18,7 +18,7 @@ export const SITE = {
   resume: { url: "[[todo: résumé PDF]]", size: "[[todo: size]]", updated: "[[todo: date]]" },
   aiStatement: {
     text: "I build with AI coding tools. I am responsible for the design decisions, the verification and what ships.",
-    approved: false,
+    approved: true,
   },
   version: "1.0.0-rc.1",
   updated: "2026-11-26",
