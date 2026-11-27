@@ -4,6 +4,11 @@ import "@fontsource/atkinson-hyperlegible-next/latin-400.css";
 import "@fontsource/atkinson-hyperlegible-next/latin-600.css";
 import "@fontsource-variable/jetbrains-mono/wght.css";
 import "@/styles/global.css";
+// The four files the first screen uses, preloaded so they arrive with the stylesheet and do not shift text.
+import fontDisplay from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
+import fontBody from "@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-400-normal.woff2?url";
+import fontBodyStrong from "@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-600-normal.woff2?url";
+import fontMono from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import EvidenceList from "@/components/EvidenceList.astro";
@@ -51,6 +56,9 @@ const { html: main, order } = processEvidence(await Astro.slots.render("default"
 <html lang="en-IN">
   <head>
     <meta charset="utf-8" />
+    {[fontDisplay, fontBody, fontBodyStrong, fontMono].map((href) => (
+      <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+    ))}
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
