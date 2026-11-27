@@ -15,12 +15,12 @@ export const SITE = {
   email: "shashankmaheshwar.sm@gmail.com",
   linkedin: "https://www.linkedin.com/in/shashank-maheshwar-1b637a248",
   github: "https://github.com/Shash-176",
-  resume: { url: "[[todo: résumé PDF]]", size: "[[todo: size]]", updated: "[[todo: date]]" },
+  resume: { url: "/Shashank-Maheshwar-Resume.pdf", size: "39 KB", updated: "27 Nov 2026" },
   aiStatement: {
     text: "I build with AI coding tools. I am responsible for the design decisions, the verification and what ships.",
     approved: true,
   },
-  version: "1.0.0-rc.1",
-  updated: "2026-11-26",
+  version: "1.0.0",
+  updated: "2026-11-27",
   themeColor: { light: "#F6F6F3", dark: "#0E0F12" },
 } as const;

@@ -1,7 +1,9 @@
 # Changelog
 
-## Unreleased
+## 1.0.0 — 27 Nov 2026 (first public release)
 
+- Published at https://shashank-maheshwar.vercel.app; repository at https://github.com/Shash-176/shashank-portfolio.
+- Résumé PDF at `/Shashank-Maheshwar-Resume.pdf` (web copy without the phone number); the `/resume` page lists what it contains.
 - Colour on interaction: chartreuse is the interaction colour. Links get a highlighter stroke, buttons fill, and rows and cards get a tint, an edge bar and a highlighted title on hover and keyboard focus. Blue marks actions ("Full case study →", "All work →", links in prose).
 - About: capability dots are chartreuse discs; CGPAs carry a highlighter stroke.
 - Contact: public email and LinkedIn; LinkedIn added to the structured data.

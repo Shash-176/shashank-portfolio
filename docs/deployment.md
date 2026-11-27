@@ -22,13 +22,14 @@ Build command `npm run build`, output `dist`, environment variable `SITE_URL`. H
 3. `npm run perf` within budget.
 4. Deploy, then verify the public site: every page, lens, both exhibits, themes, a phone, 404, metadata, share card (paste a link into a messenger), external links, console and network errors.
 
-## Placeholders blocking v1.0
+## Placeholders
 
-| Placeholder                   | Where to set it                                                                                              |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Public email address          | `src/site.ts` → `email`                                                                                      |
-| LinkedIn address              | `src/site.ts` → `linkedin`                                                                                   |
-| Résumé PDF, its size and date | Put the PDF in `public/` (for example `public/shashank-maheshwar-resume.pdf`), then `src/site.ts` → `resume` |
-| AI-tools statement            | `src/site.ts` → `aiStatement` (edit `text` if needed, set `approved: true`)                                  |
+None remain as of v1.0.0. A new `[[todo: …]]` anywhere in content makes a release build fail again; set the value where the build error points.
+
+## Production
+
+- Address: https://shashank-maheshwar.vercel.app (Vercel project `shashank-maheshwar`, Hobby).
+- Every push to `main` deploys to production; CI runs on the same push.
+- The résumé is `public/Shashank-Maheshwar-Resume.pdf`. To update it, replace the file and set `size` and `updated` in `src/site.ts`.
 
 Optional: `SITE_URL` for a custom domain (a free `*.vercel.app` address works as is).

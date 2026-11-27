@@ -1,6 +1,6 @@
 {
   "name": "shashank-portfolio",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Shashank Maheshwar's engineering portfolio: claims you can inspect, systems you can pull apart.",
