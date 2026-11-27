@@ -147,28 +147,28 @@ const jsonLd = {
     </div>
     <nav class="pager" aria-label="More case studies">
       {prev ? (
-        <a href={`/work/${prev.id}`} rel="prev">
+        <a class="hl-row" href={`/work/${prev.id}`} rel="prev">
           <span class="label">← Previous</span>
-          <strong>{prev.data.name}</strong>
+          <strong class="hl-title">{prev.data.name}</strong>
           <span>{prev.data.claim}</span>
         </a>
       ) : (
-        <a href="/work">
+        <a class="hl-row" href="/work">
           <span class="label">← All work</span>
-          <strong>Work</strong>
+          <strong class="hl-title">Work</strong>
           <span>Every project, ordered by strength of evidence.</span>
         </a>
       )}
       {next ? (
-        <a href={`/work/${next.id}`} rel="next" class="nx">
+        <a class="nx hl-row" href={`/work/${next.id}`} rel="next">
           <span class="label">Next →</span>
-          <strong>{next.data.name}</strong>
+          <strong class="hl-title">{next.data.name}</strong>
           <span>{next.data.claim}</span>
         </a>
       ) : (
-        <a href="/research" class="nx">
+        <a class="nx hl-row" href="/research">
           <span class="label">Next →</span>
-          <strong>Research</strong>
+          <strong class="hl-title">Research</strong>
           <span>What is in progress, and what is held until publication.</span>
         </a>
       )}
@@ -194,10 +194,6 @@ const jsonLd = {
     font-family: var(--font-display);
     font-size: 1.5rem;
   }
-  .pager a:hover strong {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-  }
   .pager span:last-child {
     color: var(--muted);
     font-size: var(--fs-note);
@@ -215,6 +211,17 @@ const jsonLd = {
       align-items: flex-end;
       padding: var(--s-5) 0 var(--s-5) var(--s-5);
       border-left: var(--hair);
+    }
+    .pager a.hl-row::after {
+      right: 0;
+    }
+    .pager .nx.hl-row::after {
+      left: 0;
+      right: -12px;
+    }
+    .pager .nx.hl-row::before {
+      left: auto;
+      right: -12px;
     }
   }
   .cs-mark {

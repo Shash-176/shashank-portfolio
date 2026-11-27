@@ -59,12 +59,14 @@ const proofs = [
         </p>
         <ol>
           {proofs.map((p, i) => (
-            <li>
+            <li class="hl-row">
               <span class="no label" aria-hidden="true">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span class="c">
-                <Ev id={p.ev}>{p.claim}</Ev>
+                <Ev id={p.ev}>
+                  <span class="hl-title">{p.claim}</span>
+                </Ev>
               </span>
               <span class="how">{p.how}</span>
               <span class={`v tone-${p.tone}`}>
@@ -126,7 +128,9 @@ const proofs = [
         ))}
       </ol>
       <p class="all">
-        <a href="/work">All work, with what each one proves →</a>
+        <a class="link" href="/work">
+          All work, with what each one proves →
+        </a>
       </p>
     </section>
 

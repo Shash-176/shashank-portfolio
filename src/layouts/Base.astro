@@ -16,6 +16,7 @@ import LensBar from "@/components/LensBar.astro";
 import { SITE } from "@/site";
 import { evidenceById } from "@/lib/evidence";
 import { processEvidence, listHtml } from "@/lib/evidence-render";
+import { hasPlaceholder } from "@/lib/rules";
 
 interface Props {
   title: string;
@@ -43,7 +44,7 @@ const person = {
   name: SITE.name,
   jobTitle: SITE.role,
   url: Astro.site?.href,
-  sameAs: [SITE.github],
+  sameAs: [SITE.github, SITE.linkedin].filter((u) => !hasPlaceholder(u)),
   alumniOf: { "@type": "CollegeOrUniversity", name: "K. J. Somaiya Institute of Management" },
   homeLocation: { "@type": "Place", name: "Mumbai, India" },
 };

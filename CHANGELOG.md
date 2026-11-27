@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Colour on interaction: chartreuse is the interaction colour. Links get a highlighter stroke, buttons fill, and rows and cards get a tint, an edge bar and a highlighted title on hover and keyboard focus. Blue marks actions ("Full case study →", "All work →", links in prose).
+- About: capability dots are chartreuse discs; CGPAs carry a highlighter stroke.
+- Contact: public email and LinkedIn; LinkedIn added to the structured data.
+- The AI-tools statement is approved.
+- The four first-screen fonts are preloaded, so text no longer shifts when they load (CI measured CLS 0.145 on one machine; now 0.000).
+
 ## 1.0.0-rc.1 — 26 Nov 2026 (V1 candidate)
 
 - Page transitions (progressive): the project title carries over from a list into its case study; the header stays put.

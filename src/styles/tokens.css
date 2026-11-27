@@ -14,6 +14,9 @@
   --head-bg: #e3f23a; /* the one large chartreuse area per screen */
   --head-ink: #14161a;
   --chip: #e3f23a; /* active page, selected layer */
+  --mark: #e3f23a; /* hover and focus: the highlighter stroke behind text */
+  --mark-ink: #14161a;
+  --bar: #c8d81c; /* hover edge bar on rows and cards; a shade darker so it reads on paper */
   --link: #1d3fd1;
   --ok: #166b45;
   --warn: #8a5a00;
@@ -93,6 +96,9 @@
     --head-bg: transparent;
     --head-ink: #d9ec4b;
     --chip: #d9ec4b;
+    --mark: rgba(217, 236, 75, 0.13);
+    --mark-ink: #e4f27a;
+    --bar: #d9ec4b;
     --link: #8fa8ff;
     --ok: #56d990;
     --warn: #f2c14e;
@@ -116,6 +122,9 @@
   --head-bg: transparent;
   --head-ink: #d9ec4b;
   --chip: #d9ec4b;
+  --mark: rgba(217, 236, 75, 0.13);
+  --mark-ink: #e4f27a;
+  --bar: #d9ec4b;
   --link: #8fa8ff;
   --ok: #56d990;
   --warn: #f2c14e;

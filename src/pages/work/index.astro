@@ -36,15 +36,15 @@ const FILTER_AT = 8;
     <section class="also" aria-labelledby="also-h">
       <h2 id="also-h">Also</h2>
       <ul>
-        <li>
+        <li class="hl-row">
           <a href="/research">
-            <strong>Usage-Aware Progressive Image Retention</strong> · research
+            <strong class="hl-title">Usage-Aware Progressive Image Retention</strong> · research
           </a>{" "}
           <State state="Research in progress" word="Not published" size={13} />
         </li>
-        <li>
+        <li class="hl-row">
           <a href="/about#leadership">
-            <strong>ICON</strong> · Head of Development Team
+            <strong class="hl-title">ICON</strong> · Head of Development Team
           </a>{" "}
           <State state="Stated" size={13} />
         </li>
@@ -97,8 +97,5 @@ const FILTER_AT = 8;
   }
   .also a {
     text-decoration: none;
-  }
-  .also a:hover strong {
-    text-decoration: underline;
   }
 </style>

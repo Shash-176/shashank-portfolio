@@ -47,7 +47,9 @@ a {
 a:hover {
   text-decoration-thickness: 2px;
 }
-a.link {
+a.link,
+.prose a:not([class]),
+.lead a:not([class]) {
   color: var(--link);
 }
 code,
@@ -182,7 +184,9 @@ ol {
   transition: background-color var(--t-fast) var(--ease-out);
 }
 .btn:hover {
-  background: var(--tint);
+  background: var(--mark);
+  border-color: var(--ink);
+  color: var(--mark-ink);
 }
 .btn.primary {
   background: var(--ink);
@@ -190,7 +194,9 @@ ol {
   border-color: var(--ink);
 }
 .btn.primary:hover {
-  opacity: 0.9;
+  background: var(--chip);
+  border-color: var(--chip);
+  color: #14161a;
 }
 .btn[disabled],
 .btn[aria-disabled="true"] {
@@ -295,4 +301,124 @@ ol {
 }
 .print-only {
   display: none;
+}
+
+/* ---------- interaction: the highlighter ----------
+   Chartreuse is the interaction colour: a stroke swept behind text, a fill on buttons and an edge bar on rows and
+   cards. Blue stays the link colour. Hover effects need a real pointer; keyboard focus gets the same treatment. */
+
+/* Inline links: a highlighter stroke sweeps in behind the text. */
+.prose a:not([class]),
+.lead a:not([class]),
+a.link,
+a.mk,
+.label a:not([class]),
+p > a:not([class]),
+li > a:not([class]) {
+  background-image: linear-gradient(var(--mark), var(--mark));
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition:
+    background-size var(--t-ui) var(--ease-out),
+    color var(--t-fast) var(--ease-out);
+}
+@media (hover: hover) {
+  .prose a:not([class]):hover,
+  .lead a:not([class]):hover,
+  a.link:hover,
+  a.mk:hover,
+  .label a:not([class]):hover,
+  p > a:not([class]):hover,
+  li > a:not([class]):hover {
+    background-size: 100% 100%;
+    color: var(--mark-ink);
+  }
+}
+:is(
+  .prose a:not([class]),
+  .lead a:not([class]),
+  a.link,
+  a.mk,
+  .label a:not([class]),
+  p > a:not([class]),
+  li > a:not([class])
+):focus-visible {
+  background-size: 100% 100%;
+  color: var(--mark-ink);
+}
+
+/* Rows and cards: a tint, a chartreuse edge bar and a highlighted title. Put .hl-row on the hover target and
+   .hl-title on the text to mark. The tint is an overlay that reaches 12px past the row on each side, so text,
+   rules and layout stay exactly where they are. */
+.hl-row {
+  position: relative;
+  isolation: isolate;
+}
+.hl-row::before,
+.hl-row::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.hl-row::after {
+  left: -12px;
+  right: -12px;
+  background: var(--tint);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+.hl-row::before {
+  left: -12px;
+  width: 4px;
+  z-index: 0;
+  background: var(--bar);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--t-ui) var(--ease-out);
+}
+.hl-title {
+  background-image: linear-gradient(var(--mark), var(--mark));
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition:
+    background-size var(--t-ui) var(--ease-out),
+    color var(--t-fast) var(--ease-out);
+}
+@media (hover: hover) {
+  .hl-row:hover::after {
+    opacity: 1;
+  }
+  .hl-row:hover::before {
+    transform: scaleY(1);
+  }
+  .hl-row:hover .hl-title {
+    background-size: 100% 100%;
+    color: var(--mark-ink);
+  }
+}
+.hl-row:is(:focus-visible, :has(:focus-visible))::after,
+.hl-row:active::after {
+  opacity: 1;
+}
+.hl-row:is(:focus-visible, :has(:focus-visible))::before {
+  transform: scaleY(1);
+}
+.hl-row:is(:focus-visible, :has(:focus-visible)) .hl-title {
+  background-size: 100% 100%;
+  color: var(--mark-ink);
+}
+
+/* A highlighted figure that stays marked: CGPA and similar. */
+mark.score {
+  background: linear-gradient(transparent 52%, var(--mark) 52%);
+  color: var(--mark-ink);
+  padding: 0 2px;
+  font-weight: 600;
 }

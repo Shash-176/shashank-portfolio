@@ -113,7 +113,7 @@ const uid = `dg-${id}`;
     {d.layers.map((l, i) => (
       <li data-layer={i} class:list={{ selected: i === d.selected }}>
         <button type="button" class="pick" aria-pressed={i === d.selected ? "true" : "false"} data-pick={i}>
-          <span class="mono">{i + 1}</span> <strong>{l.name}</strong>
+          <span class="mono">{i + 1}</span> <strong class="hl-title">{l.name}</strong>
         </button>
         <span class="purpose">{l.purpose}.</span> <span class="detail">{l.detail}</span>
         {d.boundary && d.boundary.after === i && (
@@ -251,8 +251,9 @@ const uid = `dg-${id}`;
     font-size: 1rem;
     text-align: left;
   }
-  .pick:hover strong {
-    text-decoration: underline;
+  .pick:hover .hl-title,
+  .pick:focus-visible .hl-title {
+    background-size: 100% 100%;
   }
   :global(html:not(.js)) .pick {
     pointer-events: none;

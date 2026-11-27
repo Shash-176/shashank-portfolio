@@ -58,7 +58,8 @@ const words: Record<string, string> = {
               <p class="label">What you can see now</p>
               <a class="card" href={`/work/${r.data.related.id}`}>
                 <span>
-                  <strong>Research Data Platform</strong>, the engineering that keeps the study’s numbers honest
+                  <strong class="hl-title">Research Data Platform</strong>, the engineering that keeps the study’s
+                  numbers honest
                   <br />
                   <span class="muted">Provenance, idempotent ingestion, reconciliation. No result values.</span>
                 </span>
@@ -141,8 +142,19 @@ const words: Record<string, string> = {
     background: var(--surface);
     text-decoration: none;
   }
-  .card:hover strong {
-    text-decoration: underline;
+  .card {
+    transition:
+      box-shadow var(--t-ui) var(--ease-out),
+      background-color var(--t-fast) var(--ease-out);
+  }
+  .card:hover,
+  .card:focus-visible {
+    box-shadow: inset 4px 0 0 var(--bar);
+    background: var(--tint);
+  }
+  .card:hover .hl-title,
+  .card:focus-visible .hl-title {
+    background-size: 100% 100%;
   }
   .muted {
     color: var(--muted);

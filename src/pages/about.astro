@@ -75,21 +75,27 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
       <h2 id="edu-h">Education</h2>
       <ul class="ruled">
         {edu.map((r, i) => (
-          <li>
+          <li class="hl-row">
             <span class="mono">
               {r.data.start} – {r.data.end}
             </span>
             <span>
               {i === 0 ? (
                 <Ev id="edu">
-                  <strong>{r.data.title}</strong>
+                  <strong class="hl-title">{r.data.title}</strong>
                 </Ev>
               ) : (
-                <strong>{r.data.title}</strong>
+                <strong class="hl-title">{r.data.title}</strong>
               )}
               <br />
               {r.data.organisation}
-              {r.data.summary && ` · ${r.data.summary}`}
+              {r.data.summary &&
+                r.data.summary.split(" · ").map((part) => (
+                  <>
+                    {" · "}
+                    {part.startsWith("CGPA") ? <mark class="score">{part}</mark> : part}
+                  </>
+                ))}
             </span>
           </li>
         ))}
@@ -101,7 +107,10 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
       <div class="table-scroll">
         <table class="caps">
           <caption class="label">
-            ● substantial use, with evidence on the case study · ○ supporting use · no ratings, no logos
+            <span class="dot full" aria-hidden="true" />
+            substantial use, with evidence on the case study ·
+            <span class="dot" aria-hidden="true" />
+            supporting use · no ratings, no logos
           </caption>
           <thead>
             <tr>
@@ -126,11 +135,11 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
                     <td>
                       {sub ? (
                         <a href={`/work/${p.id}`} aria-label={`${c.data.name}: substantial use in ${p.data.name}`}>
-                          ●
+                          <span class="dot full" aria-hidden="true" />
                         </a>
                       ) : sup ? (
                         <a href={`/work/${p.id}`} aria-label={`${c.data.name}: supporting use in ${p.data.name}`}>
-                          ○
+                          <span class="dot" aria-hidden="true" />
                         </a>
                       ) : (
                         <span aria-label="not used">—</span>
@@ -152,13 +161,17 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
               {projects
                 .filter((p) => c.data.substantial.some((r) => r.id === p.id))
                 .map((p) => (
-                  <a href={`/work/${p.id}`}>● {short[p.id] ?? p.data.name}</a>
+                  <a href={`/work/${p.id}`}>
+                    <span class="dot full" aria-hidden="true" />
+                    {short[p.id] ?? p.data.name}
+                  </a>
                 ))}
               {projects
                 .filter((p) => c.data.supporting.some((r) => r.id === p.id))
                 .map((p) => (
                   <a href={`/work/${p.id}`} class="sup">
-                    ○ {short[p.id] ?? p.data.name}
+                    <span class="dot" aria-hidden="true" />
+                    {short[p.id] ?? p.data.name}
                   </a>
                 ))}
             </span>
@@ -230,13 +243,15 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
 
     <section class="block" aria-labelledby="res-h">
       <h2 id="res-h">Current research</h2>
-      <a class="research" href="/research">
+      <a class="research hl-row" href="/research">
         <span>
-          <strong>Usage-Aware Progressive Image Retention</strong>
+          <strong class="hl-title">Usage-Aware Progressive Image Retention</strong>
           <br />
           <span class="muted">In progress · not published</span>
         </span>
-        <span>Research →</span>
+        <span class="go">
+          Research <span aria-hidden="true">→</span>
+        </span>
       </a>
     </section>
     <span id="contact"></span>
@@ -319,6 +334,7 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
     border-top: var(--frame);
   }
   .ruled li {
+    cursor: default;
     display: grid;
     grid-template-columns: 1fr;
     gap: 2px 20px;
@@ -372,8 +388,64 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
     min-height: 44px;
     line-height: 44px;
   }
-  .caps td a:hover {
+  .dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    vertical-align: -2px;
+    transition: transform var(--t-fast) var(--ease-out);
+  }
+  .dot.full {
+    background: var(--chip);
+  }
+  caption .dot {
+    width: 10px;
+    height: 10px;
+    vertical-align: -1px;
+  }
+  .caps tbody tr {
+    transition: background-color var(--t-fast) var(--ease-out);
+  }
+  .caps tbody tr:hover {
     background: var(--tint);
+  }
+  .caps tbody tr:hover th strong {
+    background: var(--mark);
+    color: var(--mark-ink);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .caps td a:hover .dot,
+  .caps td a:focus-visible .dot {
+    transform: scale(1.35);
+  }
+  .caps td a:hover {
+    background: var(--mark);
+  }
+  .where a {
+    gap: 6px;
+  }
+  .where .dot {
+    width: 10px;
+    height: 10px;
+  }
+  .where a:hover {
+    background: var(--mark);
+    color: var(--mark-ink);
+  }
+  .go {
+    color: var(--link);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .go span {
+    display: inline-block;
+    transition: transform var(--t-fast) var(--ease-out);
+  }
+  .research:hover .go span {
+    transform: translateX(4px);
   }
   .muted {
     color: var(--muted);
@@ -430,8 +502,5 @@ const resumeHref = hasPlaceholder(SITE.resume.url) ? "/resume" : SITE.resume.url
     border-top: var(--frame);
     border-bottom: var(--frame);
     text-decoration: none;
-  }
-  .research:hover strong {
-    text-decoration: underline;
   }
 </style>

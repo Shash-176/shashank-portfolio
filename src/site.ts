@@ -12,8 +12,8 @@ export const SITE = {
     "MCA student at K. J. Somaiya Institute of Management, graduating in 2027. PostgreSQL at the centre of most of what I build, and an explicit state for “cannot tell”.",
   description:
     "Shashank Maheshwar, backend and data engineer. Systems that verify their own results, including the AI parts, with the evidence attached.",
-  email: "[[todo: public email address]]",
-  linkedin: "[[todo: LinkedIn address]]",
+  email: "shashankmaheshwar.sm@gmail.com",
+  linkedin: "https://www.linkedin.com/in/shashank-maheshwar-1b637a248",
   github: "https://github.com/Shash-176",
   resume: { url: "[[todo: résumé PDF]]", size: "[[todo: size]]", updated: "[[todo: date]]" },
   aiStatement: {
